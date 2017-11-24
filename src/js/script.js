@@ -2,7 +2,7 @@
 
 const init = () => {
 
-  console.log(`Hello, EXW_musicForest`)
+  console.log(`Hello, EXW_musicForest`);
 
 };
 
