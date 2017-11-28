@@ -6871,6 +6871,14 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
+three-dragcontrols@^0.88.1:
+  version "0.88.1"
+  resolved "https://registry.yarnpkg.com/three-dragcontrols/-/three-dragcontrols-0.88.1.tgz#e16414d39e4a2a82c87a4844050b18b4006212e3"
+
+three-trackballcontrols@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/three-trackballcontrols/-/three-trackballcontrols-0.0.7.tgz#42cae1f6856d5f889eaae3a0e2fca9d214793e91"
+
 three@^0.88.0:
   version "0.88.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.88.0.tgz#4256c2fc38e4fb23a0d23eba2b6cce4df8e466d5"
