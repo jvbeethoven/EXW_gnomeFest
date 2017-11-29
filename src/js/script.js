@@ -6,18 +6,18 @@ import TrackballControls from 'three-trackballcontrols';
 const synth = new Tone.Synth().toMaster();
 
 let scene, camera, fieldOfView, aspectRatio, near, far, HEIGHT, WIDTH,
-  renderer, container;
+  renderer, container, loader;
 
 let hemisphereLight, shadowLight;
 
 let torus, cylinder, controls;
 const cylinders = [];
-// const collidableMeshList = [];
 
 const init = () => {
 
   createScene();
   createLights();
+  createGround();
 
   createTorus();
   createCylinder();
@@ -50,13 +50,13 @@ const createScene = () => {
   camera.position.set(0, 0, 100);
 
   controls = new TrackballControls(camera);
-  controls.rotateSpeed = 1.0;
+  // controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
-  controls.panSpeed = 0.8;
-  controls.noZoom = false;
-  controls.noPan = false;
-  controls.staticMoving = true;
-  controls.dynamicDampingFactor = 0.3;
+  // controls.panSpeed = 0.8;
+  // controls.noZoom = false;
+  // controls.noPan = false;
+  // controls.staticMoving = true;
+  // controls.dynamicDampingFactor = 0.3;
 
   renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -104,6 +104,25 @@ const createLights = () => {
   //lichten activeren
   scene.add(hemisphereLight);
   scene.add(shadowLight);
+
+};
+
+const createGround = () => {
+
+  loader = new THREE.TextureLoader();
+
+  const groundTexture = loader.load(`./assets/img/textures/vaporwave.jpg`);
+  // const groundTexture = loader.load(`./assets/img/textures/marble.jpg`);
+  groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+  groundTexture.repeat.set(25, 25);
+  groundTexture.anisotropy = 16;
+
+  const groundMaterial = new THREE.MeshLambertMaterial({map: groundTexture});
+  const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial);
+  mesh.position.y = - 250;
+  mesh.rotation.x = - Math.PI / 2;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
 
 };
 
@@ -173,28 +192,7 @@ const animate = () => {
   cylinders.forEach(cylinder => {
     cylinder.rotation.x = Date.now() * 0.001;
     cylinder.rotation.y = Date.now() * 0.0002;
-    // console.log(cylinder.position);
-    // collidableMeshList.push(cylinder);
   });
-
-  // collidableMeshList.push(torus);
-  //
-  // cylinders.forEach(cylinder => {
-  //   const originPoint = cylinder.position.clone();
-  //   const otherMeshes = collidableMeshList.filter(o => o !== cylinder);
-  //
-  //   for (let vertexIndex = 0;vertexIndex < cylinder.geometry.vertices.length;vertexIndex ++) {
-  //     const localVertex = cylinder.geometry.vertices[vertexIndex].clone();
-  //     const globalVertex = localVertex.applyMatrix4(cylinder.matrix);
-  //     const directionVector = globalVertex.sub(cylinder.position);
-  //
-  //     const ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-  //     const collisionResults = ray.intersectObjects(otherMeshes);
-  //     if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
-  //       console.log(`hit`);
-  //     }
-  //   }
-  // });
 
 
   requestAnimationFrame(animate);
