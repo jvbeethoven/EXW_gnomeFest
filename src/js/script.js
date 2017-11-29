@@ -160,10 +160,14 @@ const animate = () => {
   cylinders.forEach(cylinder => {
     cylinder.rotation.x = Date.now() * 0.001;
     cylinder.rotation.y = Date.now() * 0.0002;
+    collidableMeshList.push(cylinder);
   });
+
+  collidableMeshList.push(torus);
 
   cylinders.forEach(cylinder => {
     const originPoint = cylinder.position.clone();
+    const otherMeshes = collidableMeshList.filter(o => o !== cylinder);
 
     for (let vertexIndex = 0;vertexIndex < cylinder.geometry.vertices.length;vertexIndex ++) {
       const localVertex = cylinder.geometry.vertices[vertexIndex].clone();
@@ -171,7 +175,7 @@ const animate = () => {
       const directionVector = globalVertex.sub(cylinder.position);
 
       const ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      const collisionResults = ray.intersectObjects(collidableMeshList);
+      const collisionResults = ray.intersectObjects(otherMeshes);
       if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
         console.log(`hit`);
       }
