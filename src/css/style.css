@@ -2,7 +2,8 @@
 @import 'vars';
 
 html {
-  background-color: var(--bg-color);
+  background: linear-gradient(to right, #ff512f, #dd2476);
+  /*background-color: var(--bg-color);*/
 }
 
 body {
