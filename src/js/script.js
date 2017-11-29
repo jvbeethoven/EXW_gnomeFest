@@ -1,9 +1,9 @@
-// import Tone from 'tone';
+import Tone from 'tone';
 import * as THREE from 'three';
 import DragControls from 'three-dragcontrols';
 import TrackballControls from 'three-trackballcontrols';
 //
-// const synth = new Tone.Synth().toMaster();
+const synth = new Tone.Synth().toMaster();
 
 let scene, camera, fieldOfView, aspectRatio, near, far, HEIGHT, WIDTH,
   renderer, container;
@@ -12,7 +12,7 @@ let hemisphereLight, shadowLight;
 
 let torus, cylinder, controls;
 const cylinders = [];
-const collidableMeshList = [];
+// const collidableMeshList = [];
 
 const init = () => {
 
@@ -21,9 +21,6 @@ const init = () => {
 
   createTorus();
   createCylinder();
-  checkCollision();
-
-
   animate();
 };
 
@@ -115,6 +112,8 @@ const createTorus = () => {
   const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
   const material = new THREE.MeshStandardMaterial({color: 0xffff00});
   torus = new THREE.Mesh(geometry, material);
+  torus.position.x = 30;
+  torus.position.y = - 10;
   scene.add(torus);
 
 };
@@ -125,6 +124,8 @@ const createCylinder = () => {
 
   for (let i = 0;i < 2;i ++) {
     cylinder = new THREE.Mesh(geometry, material);
+    cylinder.position.x = 20 * i;
+    cylinder.position.y = 20 * i;
     scene.add(cylinder);
     cylinders.push(cylinder);
   }
@@ -146,13 +147,25 @@ const createCylinder = () => {
 };
 
 const checkCollision = () => {
+  const torusPos = torus.position;
 
+  cylinders.forEach(cylinder => {
+    const distance = torusPos.distanceTo(cylinder.position);
+    if (distance < 12) {
+      console.log(`boom`);
+      synth.triggerAttackRelease(`C4`, `8n`);
+
+    }
+  });
 
 };
+
 
 const animate = () => {
   controls.update();
   renderer.render(scene, camera);
+
+  checkCollision();
 
   // torus.rotation.x = Date.now() * 0.0002;
   // torus.rotation.y = Date.now() * 0.001;
@@ -160,27 +173,28 @@ const animate = () => {
   cylinders.forEach(cylinder => {
     cylinder.rotation.x = Date.now() * 0.001;
     cylinder.rotation.y = Date.now() * 0.0002;
-    collidableMeshList.push(cylinder);
+    // console.log(cylinder.position);
+    // collidableMeshList.push(cylinder);
   });
 
-  collidableMeshList.push(torus);
-
-  cylinders.forEach(cylinder => {
-    const originPoint = cylinder.position.clone();
-    const otherMeshes = collidableMeshList.filter(o => o !== cylinder);
-
-    for (let vertexIndex = 0;vertexIndex < cylinder.geometry.vertices.length;vertexIndex ++) {
-      const localVertex = cylinder.geometry.vertices[vertexIndex].clone();
-      const globalVertex = localVertex.applyMatrix4(cylinder.matrix);
-      const directionVector = globalVertex.sub(cylinder.position);
-
-      const ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      const collisionResults = ray.intersectObjects(otherMeshes);
-      if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
-        console.log(`hit`);
-      }
-    }
-  });
+  // collidableMeshList.push(torus);
+  //
+  // cylinders.forEach(cylinder => {
+  //   const originPoint = cylinder.position.clone();
+  //   const otherMeshes = collidableMeshList.filter(o => o !== cylinder);
+  //
+  //   for (let vertexIndex = 0;vertexIndex < cylinder.geometry.vertices.length;vertexIndex ++) {
+  //     const localVertex = cylinder.geometry.vertices[vertexIndex].clone();
+  //     const globalVertex = localVertex.applyMatrix4(cylinder.matrix);
+  //     const directionVector = globalVertex.sub(cylinder.position);
+  //
+  //     const ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+  //     const collisionResults = ray.intersectObjects(otherMeshes);
+  //     if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+  //       console.log(`hit`);
+  //     }
+  //   }
+  // });
 
 
   requestAnimationFrame(animate);
