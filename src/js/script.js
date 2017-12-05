@@ -1,106 +1,114 @@
-import synth from './lib/synth';
+import Tone from 'tone';
 import * as THREE from 'three';
+import DragControls from 'three-dragcontrols';
+import TrackballControls from 'three-trackballcontrols';
+//
+const synth = new Tone.Synth().toMaster();
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
+let scene, camera, fieldOfView, aspectRatio, near, far, HEIGHT, WIDTH,
+  renderer, container, loader;
 
-const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-const cylindergeometry = new THREE.CylinderGeometry(.2, .2, .2, .2);
-//const material2 = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
-const material = new THREE.MeshNormalMaterial();
-const mesh = new THREE.Mesh(geometry, material);
-const mesh2 = new THREE.Mesh(cylindergeometry, material);
-const renderer = new THREE.WebGLRenderer({antialias: true});
-const loader = new THREE.JSONLoader();
-
-let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe;
-
-
-const init = () => {
-
-  loadAssets();
-  console.log(`Hello`);
-  synth();
-  camera.position.z = 5;
-  mesh2.position.x = 2;
-
-  scene.add(mesh2);
-  scene.add(mesh);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
+  container.appendChild(renderer.domElement);
+
+  //lichten activeren
+  scene.add(hemisphereLight);
+  scene.add(shadowLight);
 
 };
 
-const loadAssets = () => {
-  //POTGOUD
-  loader.load(`./assets/json/potgoud.json`, function (geometry) {
-    potgoud = new THREE.Mesh(geometry, material);
-    potgoud.scale.set(0.001, 0.001, 0.001);
-    potgoud.position.x = 0;
-    potgoud.rotation.x = 46;
-    scene.add(potgoud);
-  });
+const createGround = () => {
 
-  //kabouter
-  loader.load(`./assets/json/kabouter.json`, function (geometry) {
-    kabouter = new THREE.Mesh(geometry, material);
-    kabouter.scale.set(0.001, 0.001, 0.001);
-    kabouter.position.x = 4;
-    kabouter.rotation.x = 0;
-    scene.add(kabouter);
-  });
+  loader = new THREE.TextureLoader();
 
-  //fakkel
-  loader.load(`./assets/json/fakkel.json`, function (geometry) {
-    fakkel = new THREE.Mesh(geometry, material);
-    fakkel.scale.set(0.001, 0.001, 0.001);
-    fakkel.position.x = 2;
-    fakkel.rotation.x = 0;
-    scene.add(fakkel);
-  });
+  const groundTexture = loader.load(`./assets/img/textures/vaporwave.jpg`);
+  // const groundTexture = loader.load(`./assets/img/textures/marble.jpg`);
+  groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
+  groundTexture.repeat.set(25, 25);
+  groundTexture.anisotropy = 16;
 
-  //paddestoel
-  loader.load(`./assets/json/paddestoel.json`, function (geometry) {
-    paddestoel = new THREE.Mesh(geometry, material);
-    paddestoel.scale.set(0.001, 0.001, 0.001);
-    paddestoel.position.x = 4;
-    paddestoel.rotation.x = 0;
-    scene.add(paddestoel);
-  });
+  const groundMaterial = new THREE.MeshLambertMaterial({map: groundTexture});
+  const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(20000, 20000), groundMaterial);
+  mesh.position.y = - 250;
+  mesh.rotation.x = - Math.PI / 2;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
 
-  //boomstronk
-  loader.load(`./assets/json/boomstronk.json`, function (geometry) {
-    boomstronk = new THREE.Mesh(geometry, material);
-    const s = 0.006;
-    boomstronk.scale.set(s, s, s);
-    boomstronk.position.x = 3;
-    boomstronk.rotation.x = 0;
-    scene.add(boomstronk);
-  });
-
-  //pickaxe
-  loader.load(`./assets/json/pickaxe.json`, function (geometry) {
-    pickaxe = new THREE.Mesh(geometry, material);
-    pickaxe.scale.set(0.001, 0.001, 0.001);
-    pickaxe.position.x = 4;
-    pickaxe.rotation.x = 0;
-    scene.add(pickaxe);
-  });
-
-  render();
 };
 
-const render = () => {
-  requestAnimationFrame(render);
-  scene.rotation.x += 0.01;
-  /*
-  mesh2.rotation.y += 0.01;
-  mesh2.rotation.x += 0.01;
-  mesh.rotation.x += 0.01;
-  mesh.rotation.y += 0.02;
-  */
+const createTorus = () => {
 
+  const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+  const material = new THREE.MeshStandardMaterial({color: 0xffff00});
+  torus = new THREE.Mesh(geometry, material);
+  torus.position.x = 30;
+  torus.position.y = - 10;
+  scene.add(torus);
+
+};
+
+const createCylinder = () => {
+  const geometry = new THREE.CylinderGeometry(5, 5, 20, 32);
+  const material = new THREE.MeshStandardMaterial({color: 0xff0000});
+
+  for (let i = 0;i < 2;i ++) {
+    cylinder = new THREE.Mesh(geometry, material);
+    cylinder.position.x = 20 * i;
+    cylinder.position.y = 20 * i;
+    scene.add(cylinder);
+    cylinders.push(cylinder);
+  }
+
+  const dragControls = new DragControls(cylinders, camera, renderer.domElement);
+
+  dragControls.addEventListener(`dragstart`, e => {
+    console.log(e.target);
+    controls.enabled = false;
+    // synth.triggerAttack(`${e.target}.C4`);
+  });
+
+  dragControls.addEventListener(`dragend`, e => {
+    console.log(e);
+    // synth.triggerRelease();
+    controls.enabled = true;
+  });
+
+};
+
+const checkCollision = () => {
+  const torusPos = torus.position;
+
+  cylinders.forEach(cylinder => {
+    const distance = torusPos.distanceTo(cylinder.position);
+    if (distance < 12) {
+      console.log(`boom`);
+      synth.triggerAttackRelease(`C4`, `8n`);
+
+    }
+  });
+
+};
+
+
+const animate = () => {
+  controls.update();
   renderer.render(scene, camera);
+
+  checkCollision();
+
+  // torus.rotation.x = Date.now() * 0.0002;
+  // torus.rotation.y = Date.now() * 0.001;
+
+  cylinders.forEach(cylinder => {
+    cylinder.rotation.x = Date.now() * 0.001;
+    cylinder.rotation.y = Date.now() * 0.0002;
+  });
+
+
+  requestAnimationFrame(animate);
 };
+
 
 init();
