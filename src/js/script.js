@@ -8,98 +8,10 @@ const synth = new Tone.Synth().toMaster();
 let scene, camera, fieldOfView, aspectRatio, near, far, HEIGHT, WIDTH,
   renderer, container, loader;
 
-let hemisphereLight, shadowLight;
-
-let torus, cylinder, controls;
-const cylinders = [];
-
-const init = () => {
-
-  createScene();
-  createLights();
-  createGround();
-
-  createTorus();
-  createCylinder();
-  animate();
-};
-
-const createScene = () => {
-
-  container = document.createElement(`div`);
-  document.body.appendChild(container);
-
-  HEIGHT = window.innerHeight;
-  WIDTH = window.innerWidth;
-
-  scene = new THREE.Scene();
-
-  // camera creëren
-  aspectRatio = WIDTH / HEIGHT;
-  fieldOfView = 60;
-  near = 1;
-  far = 10000;
-  camera = new THREE.PerspectiveCamera(
-		fieldOfView,
-		aspectRatio,
-		near,
-		far
-		);
-
-  // positie camera instellen
-  camera.position.set(0, 0, 100);
-
-  controls = new TrackballControls(camera);
-  // controls.rotateSpeed = 1.0;
-  controls.zoomSpeed = 1.2;
-  // controls.panSpeed = 0.8;
-  // controls.noZoom = false;
-  // controls.noPan = false;
-  // controls.staticMoving = true;
-  // controls.dynamicDampingFactor = 0.3;
-
-  renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
-  renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   container.appendChild(renderer.domElement);
-
-  window.addEventListener(`resize`, handleWindowResize, false);
-};
-
-const handleWindowResize = () => {
-
-  HEIGHT = window.innerHeight;
-  WIDTH = window.innerWidth;
-  renderer.setSize(WIDTH, HEIGHT);
-  camera.aspect = WIDTH / HEIGHT;
-  camera.updateProjectionMatrix();
-
-};
-
-const createLights = () => {
-
-  // gradient lichten aanmaken met sky color, ground colorn intensity
-  hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, .9);
-  // soort van parallelle zonlichten
-  shadowLight = new THREE.DirectionalLight(0xffffff, .9);
-
-
-  shadowLight.position.set(150, 350, 350);
-  shadowLight.castShadow = true;
-
-  //zichtbare deel van schaduw bepalen
-  shadowLight.shadow.camera.left = - 400;
-  shadowLight.shadow.camera.right = 400;
-  shadowLight.shadow.camera.top = 400;
-  shadowLight.shadow.camera.bottom = - 400;
-  shadowLight.shadow.camera.near = 1;
-  shadowLight.shadow.camera.far = 1000;
-
-  //schaduw resolutie bepalen
-  shadowLight.shadow.mapSize.width = 2048;
-  shadowLight.shadow.mapSize.height = 2048;
 
   //lichten activeren
   scene.add(hemisphereLight);
