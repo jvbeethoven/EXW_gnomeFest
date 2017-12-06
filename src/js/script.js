@@ -1,34 +1,43 @@
-import synth from './lib/synth';
 import * as THREE from 'three';
 
 let potgoud, fakkel, container,
   scene, camera, abstractTexture, abstractMaterial, WIDTH, HEIGHT;
 
-const renderer = new THREE.WebGLRenderer({antialias: true});
-const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-const cylindergeometry = new THREE.CylinderGeometry(.2, .2, .2, .2);
+const renderer = new THREE.WebGLRenderer({antialias: false});
 const material = new THREE.MeshNormalMaterial();
-const mesh = new THREE.Mesh(geometry, material);
-const mesh2 = new THREE.Mesh(cylindergeometry, material);
 
 const loader = new THREE.JSONLoader();
 const textureLoader = new THREE.TextureLoader();
 
 const init = () => {
-  loadMaterials();
   createScene();
   loadAssets()
+    .then(loadMaterials())
     .then(() => render());
   // console.log(`Hello`);
   // synth();
 };
 
 const loadMaterials = () => {
+
   abstractTexture = textureLoader.load(`./assets/textures/testure2.jpeg`);
+  //displacementMap = loader.load(`./assets/textures/displacementMap.png`);
   abstractTexture.minFilter = THREE.LinearFilter;
   abstractMaterial = new THREE.MeshBasicMaterial({map: abstractTexture});
   console.log(abstractMaterial);
+
+  /*
+  const displacementMap = textureLoader.load(`./assets/textures/testure.jpeg`);
+
+  abstractMaterial = new THREE.MeshPhongMaterial({
+    color: 0x0a0100,
+    displacementMap: displacementMap,
+    displacementScale: 2.436143,
+    displacementBias: - 0.428408,
+  });
+  */
 };
+
 
 const createScene = () => {
 
@@ -41,7 +50,7 @@ const createScene = () => {
   scene = new THREE.Scene();
 
   camera = new THREE.PerspectiveCamera(
-  4,
+  2,
   WIDTH / HEIGHT,
   0.11,
   500
@@ -51,18 +60,11 @@ const createScene = () => {
 
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFShadowMap;
+  //renderer.shadowMap.enabled = true;
+  //renderer.shadowMap.type = THREE.PCFShadowMap;
   container.appendChild(renderer.domElement);
-  mesh2.position.x = 2;
-
-  scene.add(mesh2);
-  scene.add(mesh);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
-
-  window.addEventListener(`resize`, handleWindowResize, false);
-
 };
 
 const loadWithJSONLoader = url => {
@@ -78,6 +80,7 @@ const loadAssets = () => {
   return loadWithJSONLoader(`./assets/json/potgoud.json`)
     .then(geometry => {
       potgoud = new THREE.Mesh(geometry, abstractMaterial);
+      console.log(abstractMaterial);
       potgoud.scale.set(0.001, 0.001, 0.001);
       potgoud.position.x = 0;
       potgoud.rotation.x = 3;
@@ -93,40 +96,17 @@ const loadAssets = () => {
     });
 };
 
-
-const checkCollision = () => {
-  /*
-  const gnomePos = kabouter.position;
-  const paddestoelPos = paddestoel.position;
-
-  const distance = gnomePos.distanceTo(paddestoelPos);
-  if (distance < 12) {
-    console.log(`boom`);
-    synth();
-
-  }
-  */
-  synth();
-
-};
-
 const render = () => {
   //abstractMaterial.map.rotation += .03;
-  //potgoud.rotation.x += .01;
-  //abstractMaterial.map.rotation += .05;
+  potgoud.rotation.z += .01;
+  potgoud.rotation.x += .02;
+  abstractMaterial.map.rotation += .05;
   console.log(`waarom render ik zo traag`);
 
   renderer.render(scene, camera);
-  checkCollision();
   //handleWindowResize();
   requestAnimationFrame(render);
 };
 
-const handleWindowResize = () => {
-  renderer.setSize(WIDTH, HEIGHT);
-  camera.aspect = WIDTH / HEIGHT;
-  camera.updateProjectionMatrix();
-
-};
 
 init();
