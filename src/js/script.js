@@ -16,11 +16,12 @@ const loader = new THREE.JSONLoader();
 const init = () => {
 
   createScene();
-  loadAssets();
-  loadKabouter();
-  console.log(`Hello`);
+  loadAssets()
+    .then(() => render());
+  // loadKabouter();
+  // console.log(`Hello`);
   // synth();
-  render();
+
 
 };
 
@@ -59,93 +60,78 @@ const createScene = () => {
 
 };
 
+const loadWithJSONLoader = url => {
+  return new Promise(resolve => {
+    loader.load(url, geometry => {
+      resolve(geometry);
+    });
+  });
+};
+
 const loadAssets = () => {
-  //POTGOUD
-  loader.load(`./assets/json/potgoud.json`, function (geometry) {
-    potgoud = new THREE.Mesh(geometry, material);
-    potgoud.scale.set(0.001, 0.001, 0.001);
-    potgoud.position.x = 0;
-    potgoud.rotation.x = 3;
-    scene.add(potgoud);
-  });
 
-
-
-  //fakkel
-  loader.load(`./assets/json/fakkel.json`, function (geometry) {
-    fakkel = new THREE.Mesh(geometry, material);
-    fakkel.scale.set(0.001, 0.001, 0.001);
-    fakkel.position.x = 2;
-    fakkel.rotation.x = 0;
-    scene.add(fakkel);
-  });
-
-  //paddestoel
-  loader.load(`./assets/json/paddestoel.json`, function (geometry) {
-    paddestoel = new THREE.Mesh(geometry, material);
-    paddestoel.scale.set(0.001, 0.001, 0.001);
-    paddestoel.position.x = 4;
-    paddestoel.rotation.x = 0;
-    scene.add(paddestoel);
-  });
-
-  //boomstronk
-  loader.load(`./assets/json/boomstronk.json`, function (geometry) {
-    boomstronk = new THREE.Mesh(geometry, material);
-    const s = 0.006;
-    boomstronk.scale.set(s, s, s);
-    boomstronk.position.x = 3;
-    boomstronk.rotation.x = 0;
-    scene.add(boomstronk);
-  });
-
-  //pickaxe
-  loader.load(`./assets/json/pickaxe.json`, function (geometry) {
-    pickaxe = new THREE.Mesh(geometry, material);
-    pickaxe.scale.set(0.001, 0.001, 0.001);
-    pickaxe.position.x = 4;
-    pickaxe.rotation.x = 0;
-    scene.add(pickaxe);
-  });
+  return loadWithJSONLoader(`./assets/json/potgoud.json`)
+    .then(geometry => {
+      potgoud = new THREE.Mesh(geometry, material);
+      potgoud.scale.set(0.001, 0.001, 0.001);
+      potgoud.position.x = 0;
+      potgoud.rotation.x = 3;
+      scene.add(potgoud);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/fakkel.json`))
+    .then(geometry => {
+      fakkel = new THREE.Mesh(geometry, material);
+      fakkel.scale.set(0.001, 0.001, 0.001);
+      fakkel.position.x = 2;
+      fakkel.rotation.x = 0;
+      scene.add(fakkel);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/paddestoel.json`))
+    .then(geometry => {
+      paddestoel = new THREE.Mesh(geometry, material);
+      paddestoel.scale.set(0.001, 0.001, 0.001);
+      paddestoel.position.x = 4;
+      paddestoel.rotation.x = 0;
+      scene.add(paddestoel);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/boomstronk.json`))
+    .then(geometry => {
+      boomstronk = new THREE.Mesh(geometry, material);
+      const s = 0.006;
+      boomstronk.scale.set(s, s, s);
+      boomstronk.position.x = 3;
+      boomstronk.rotation.x = 0;
+      scene.add(boomstronk);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
+    .then(geometry => {
+      pickaxe = new THREE.Mesh(geometry, material);
+      pickaxe.scale.set(0.001, 0.001, 0.001);
+      pickaxe.position.x = 4;
+      pickaxe.rotation.x = 0;
+      scene.add(pickaxe);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/kabouter.json`))
+    .then(geometry => {
+      kabouter = new THREE.Mesh(geometry, material);
+      kabouter.scale.set(0.001, 0.001, 0.001);
+      kabouter.position.x = 4;
+      kabouter.rotation.x = 0;
+      scene.add(kabouter);
+    });
 };
 
-const loadKabouter = () => {
-  // kabouter
-  // loader.load(`./assets/json/kabouter.json`, function (geometry) {
-  //   kabouter = new THREE.Mesh(geometry, material);
-  //   kabouter.scale.set(0.001, 0.001, 0.001);
-  //   kabouter.position.x = 4;
-  //   kabouter.rotation.x = 0;
-  //   scene.add(kabouter);
-  // });
-
-  loader.load(`./assets/json/kabouter.json`, loadGnome);
-};
-
-const loadGnome = () => {
-
-  kabouter = new THREE.Mesh(geometry, material);
-  kabouter.scale.set(0.001, 0.001, 0.001);
-  kabouter.position.x = 4;
-  kabouter.rotation.x = 0;
-  scene.add(kabouter);
-  console.log(loader.onload);
-
-};
 
 const checkCollision = () => {
+  const gnomePos = kabouter.position;
+  const paddestoelPos = paddestoel.position;
 
-  console.log(fakkel);
+  const distance = gnomePos.distanceTo(paddestoelPos);
+  if (distance < 12) {
+    console.log(`boom`);
+    synth();
 
-  // const gnomePos = kabouter.position;
-  // const paddestoelPos = paddestoel.position;
-  //
-  // const distance = gnomePos.distanceTo(paddestoelPos);
-  // if (distance < 12) {
-  //   console.log(`boom`);
-  synth();
-  //
-  // }
+  }
 
 };
 
