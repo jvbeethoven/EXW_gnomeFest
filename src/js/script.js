@@ -1,10 +1,13 @@
 import synth from './lib/synth';
 import * as THREE from 'three';
+import DragControls from 'three-dragcontrols';
 
 let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container,
   scene, camera, WIDTH, HEIGHT;
 
-const renderer = new THREE.WebGLRenderer({antialias: true});
+const renderer = new THREE.WebGLRenderer(
+  {antialias: true,
+    alpha: true});
 const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
 const cylindergeometry = new THREE.CylinderGeometry(.2, .2, .2, .2);
 const material = new THREE.MeshNormalMaterial();
@@ -12,12 +15,14 @@ const mesh = new THREE.Mesh(geometry, material);
 const mesh2 = new THREE.Mesh(cylindergeometry, material);
 
 const loader = new THREE.JSONLoader();
+const kabouters = [];
 
 const init = () => {
 
   createScene();
   loadAssets()
-    .then(() => render());
+    .then(() => render())
+    .then(() => makeDraggable());
   // loadKabouter();
   // console.log(`Hello`);
   // synth();
@@ -30,10 +35,13 @@ const createScene = () => {
   container = document.createElement(`div`);
   document.body.appendChild(container);
 
+  // controls = new THREE.TrackballControls(camera);
+
   HEIGHT = window.innerHeight;
   WIDTH = window.innerWidth;
 
   scene = new THREE.Scene();
+  // scene.background = new THREE.Color(0xff0000);
 
   camera = new THREE.PerspectiveCamera(
   4,
@@ -113,25 +121,33 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/kabouter.json`))
     .then(geometry => {
-      kabouter = new THREE.Mesh(geometry, material);
-      kabouter.scale.set(0.001, 0.001, 0.001);
-      kabouter.position.x = 4;
-      kabouter.rotation.x = 0;
-      scene.add(kabouter);
+      for (let i = 0;i < 5;i ++) {
+        kabouter = new THREE.Mesh(geometry, material);
+        kabouter.scale.set(0.001, 0.001, 0.001);
+        kabouter.position.x = 4 - i;
+        kabouter.rotation.x = 0;
+        scene.add(kabouter);
+        kabouters.push(kabouter);
+      }
     });
 };
 
+const makeDraggable = () => {
+  const dragControls = new DragControls(kabouters, camera, renderer.domElement);
+  console.log(dragControls);
+};
 
 const checkCollision = () => {
-  const gnomePos = kabouter.position;
-  const paddestoelPos = paddestoel.position;
-
-  const distance = gnomePos.distanceTo(paddestoelPos);
-  if (distance < 12) {
-    console.log(`boom`);
-    synth();
-
-  }
+  // const gnomePos = kabouter.position;
+  // const paddestoelPos = paddestoel.position;
+  //
+  // const distance = gnomePos.distanceTo(paddestoelPos);
+  // if (distance < 12) {
+  //   console.log(`boom`);
+  //   synth();
+  //
+  // }
+  synth();
 
 };
 
