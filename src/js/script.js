@@ -123,6 +123,7 @@ const loadAssets = () => {
 
 
 const checkCollision = () => {
+  /*
   const gnomePos = kabouter.position;
   const paddestoelPos = paddestoel.position;
 
@@ -132,10 +133,13 @@ const checkCollision = () => {
     synth();
 
   }
+  */
+  synth();
 
 };
 
 const render = () => {
+
   renderer.render(scene, camera);
   checkCollision();
 
