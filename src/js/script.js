@@ -1,8 +1,8 @@
 import synth from './lib/synth';
 import * as THREE from 'three';
 
-let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container,
-  scene, camera, WIDTH, HEIGHT;
+let potgoud, fakkel, container,
+  scene, camera, abstractTexture, abstractMaterial, WIDTH, HEIGHT;
 
 const renderer = new THREE.WebGLRenderer({antialias: true});
 const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
@@ -14,15 +14,12 @@ const mesh2 = new THREE.Mesh(cylindergeometry, material);
 const loader = new THREE.JSONLoader();
 
 const init = () => {
-
+  abstractTexture = new THREE.TextureLoader().load(`./assets/textures/testure.jpg`);
   createScene();
   loadAssets()
     .then(() => render());
-  // loadKabouter();
   // console.log(`Hello`);
   // synth();
-
-
 };
 
 const createScene = () => {
@@ -72,7 +69,9 @@ const loadAssets = () => {
 
   return loadWithJSONLoader(`./assets/json/potgoud.json`)
     .then(geometry => {
-      potgoud = new THREE.Mesh(geometry, material);
+      abstractMaterial = new THREE.MeshBasicMaterial({map: abstractTexture});
+      console.log(abstractMaterial);
+      potgoud = new THREE.Mesh(geometry, abstractMaterial);
       potgoud.scale.set(0.001, 0.001, 0.001);
       potgoud.position.x = 0;
       potgoud.rotation.x = 3;
@@ -85,39 +84,6 @@ const loadAssets = () => {
       fakkel.position.x = 2;
       fakkel.rotation.x = 0;
       scene.add(fakkel);
-    })
-    .then(() => loadWithJSONLoader(`./assets/json/paddestoel.json`))
-    .then(geometry => {
-      paddestoel = new THREE.Mesh(geometry, material);
-      paddestoel.scale.set(0.001, 0.001, 0.001);
-      paddestoel.position.x = 4;
-      paddestoel.rotation.x = 0;
-      scene.add(paddestoel);
-    })
-    .then(() => loadWithJSONLoader(`./assets/json/boomstronk.json`))
-    .then(geometry => {
-      boomstronk = new THREE.Mesh(geometry, material);
-      const s = 0.006;
-      boomstronk.scale.set(s, s, s);
-      boomstronk.position.x = 3;
-      boomstronk.rotation.x = 0;
-      scene.add(boomstronk);
-    })
-    .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
-    .then(geometry => {
-      pickaxe = new THREE.Mesh(geometry, material);
-      pickaxe.scale.set(0.001, 0.001, 0.001);
-      pickaxe.position.x = 4;
-      pickaxe.rotation.x = 0;
-      scene.add(pickaxe);
-    })
-    .then(() => loadWithJSONLoader(`./assets/json/kabouter.json`))
-    .then(geometry => {
-      kabouter = new THREE.Mesh(geometry, material);
-      kabouter.scale.set(0.001, 0.001, 0.001);
-      kabouter.position.x = 4;
-      kabouter.rotation.x = 0;
-      scene.add(kabouter);
     });
 };
 
@@ -139,6 +105,7 @@ const checkCollision = () => {
 };
 
 const render = () => {
+//  abstractMaterial.map.rotation += .03;
 
   renderer.render(scene, camera);
   checkCollision();
