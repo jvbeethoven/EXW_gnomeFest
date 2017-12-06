@@ -23,10 +23,6 @@ const init = () => {
   loadAssets()
     .then(() => render())
     .then(() => makeDraggable());
-  // loadKabouter();
-  // console.log(`Hello`);
-  // synth();
-
 
 };
 
@@ -54,8 +50,8 @@ const createScene = () => {
 
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFShadowMap;
+  // renderer.shadowMap.enabled = true;
+  // renderer.shadowMap.type = THREE.PCFShadowMap;
   container.appendChild(renderer.domElement);
   mesh2.position.x = 2;
 
@@ -124,7 +120,8 @@ const loadAssets = () => {
       for (let i = 0;i < 5;i ++) {
         kabouter = new THREE.Mesh(geometry, material);
         kabouter.scale.set(0.001, 0.001, 0.001);
-        kabouter.position.x = 4 - i;
+        kabouter.position.x = - 5.5 + (i / 2);
+        kabouter.position.y = - 2.5;
         kabouter.rotation.x = 0;
         scene.add(kabouter);
         kabouters.push(kabouter);
@@ -138,23 +135,41 @@ const makeDraggable = () => {
 };
 
 const checkCollision = () => {
-  // const gnomePos = kabouter.position;
-  // const paddestoelPos = paddestoel.position;
-  //
-  // const distance = gnomePos.distanceTo(paddestoelPos);
-  // if (distance < 12) {
-  //   console.log(`boom`);
-  //   synth();
-  //
-  // }
-  synth();
+  const potgoudPos = potgoud.position;
+  const fakkelPos = fakkel.position;
+  const paddestoelPos = paddestoel.position;
+  const boomstronkPos = boomstronk.position;
+  const pickaxePos = pickaxe.position;
+
+  kabouters.forEach(kabouter => {
+    const distanceToPotgoud = potgoudPos.distanceTo(kabouter.position);
+    if (distanceToPotgoud < 0.1) {
+      console.log(`boom potgoud`);
+      synth();
+    }
+    const distanceToFakkel = fakkelPos.distanceTo(kabouter.position);
+    if (distanceToFakkel < 0.1) {
+      console.log(`boom fakkel`);
+    }
+    const distanceToPaddestoel = paddestoelPos.distanceTo(kabouter.position);
+    if (distanceToPaddestoel < 0.1) {
+      console.log(`boom paddestoel`);
+    }
+    const distanceToBoomstronk = boomstronkPos.distanceTo(kabouter.position);
+    if (distanceToBoomstronk < 0.1) {
+      console.log(`boom boomstronk`);
+    }
+    const distanceToPickaxe = pickaxePos.distanceTo(kabouter.position);
+    if (distanceToPickaxe < 0.1) {
+      console.log(`boom pickaxe`);
+    }
+  });
 
 };
 
 const render = () => {
   renderer.render(scene, camera);
   checkCollision();
-
   requestAnimationFrame(render);
 };
 
