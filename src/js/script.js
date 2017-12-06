@@ -12,14 +12,22 @@ const mesh = new THREE.Mesh(geometry, material);
 const mesh2 = new THREE.Mesh(cylindergeometry, material);
 
 const loader = new THREE.JSONLoader();
+const textureLoader = new THREE.TextureLoader();
 
 const init = () => {
-  abstractTexture = new THREE.TextureLoader().load(`./assets/textures/testure.jpg`);
+  loadMaterials();
   createScene();
   loadAssets()
     .then(() => render());
   // console.log(`Hello`);
   // synth();
+};
+
+const loadMaterials = () => {
+  abstractTexture = textureLoader.load(`./assets/textures/testure2.jpeg`);
+  abstractTexture.minFilter = THREE.LinearFilter;
+  abstractMaterial = new THREE.MeshBasicMaterial({map: abstractTexture});
+  console.log(abstractMaterial);
 };
 
 const createScene = () => {
@@ -69,8 +77,6 @@ const loadAssets = () => {
 
   return loadWithJSONLoader(`./assets/json/potgoud.json`)
     .then(geometry => {
-      abstractMaterial = new THREE.MeshBasicMaterial({map: abstractTexture});
-      console.log(abstractMaterial);
       potgoud = new THREE.Mesh(geometry, abstractMaterial);
       potgoud.scale.set(0.001, 0.001, 0.001);
       potgoud.position.x = 0;
@@ -105,11 +111,14 @@ const checkCollision = () => {
 };
 
 const render = () => {
-//  abstractMaterial.map.rotation += .03;
+  //abstractMaterial.map.rotation += .03;
+  //potgoud.rotation.x += .01;
+  //abstractMaterial.map.rotation += .05;
+  console.log(`waarom render ik zo traag`);
 
   renderer.render(scene, camera);
   checkCollision();
-
+  //handleWindowResize();
   requestAnimationFrame(render);
 };
 
