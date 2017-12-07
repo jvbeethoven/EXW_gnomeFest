@@ -17,7 +17,10 @@ const mesh2 = new THREE.Mesh(cylindergeometry, material);
 const loader = new THREE.JSONLoader();
 const kabouters = [];
 
-let lastSynthTriggerdTime = 0;
+// const lastSynthTriggerdTime = 0;
+
+let isTriggered = false;
+let isPlaying = false;
 
 const init = () => {
 
@@ -101,8 +104,8 @@ const loadAssets = () => {
   return loadWithJSONLoader(`./assets/json/potgoud.json`)
     .then(geometry => {
       potgoud = new THREE.Mesh(geometry, material);
-      potgoud.scale.set(0.2, 0.2, 0.2);
-      potgoud.position.x = 0;
+      potgoud.scale.set(0.3, 0.3, 0.3);
+      potgoud.position.x = - 600;
       potgoud.position.y = 0;
       potgoud.position.z = 0;
       potgoud.rotation.x = 0;
@@ -111,25 +114,26 @@ const loadAssets = () => {
     .then(() => loadWithJSONLoader(`./assets/json/fakkel.json`))
     .then(geometry => {
       fakkel = new THREE.Mesh(geometry, material);
-      fakkel.scale.set(0.2, 0.2, 0.2);
-      fakkel.position.x = 20;
+      fakkel.scale.set(0.4, 0.4, 0.4);
+      fakkel.position.x = - 300;
+      fakkel.position.y = 0;
       fakkel.rotation.x = 0;
       scene.add(fakkel);
     })
     .then(() => loadWithJSONLoader(`./assets/json/paddestoel.json`))
     .then(geometry => {
       paddestoel = new THREE.Mesh(geometry, material);
-      paddestoel.scale.set(0.2, 0.2, 0.2);
-      paddestoel.position.x = 40;
+      paddestoel.scale.set(0.4, 0.4, 0.4);
+      paddestoel.position.x = 0;
       paddestoel.rotation.x = 0;
       scene.add(paddestoel);
     })
     .then(() => loadWithJSONLoader(`./assets/json/boomstronk.json`))
     .then(geometry => {
       boomstronk = new THREE.Mesh(geometry, material);
-      const s = 0.6;
+      const s = 0.9;
       boomstronk.scale.set(s, s, s);
-      boomstronk.position.x = - 40;
+      boomstronk.position.x = 300;
       boomstronk.rotation.x = - 10;
       boomstronk.rotation.y = 2;
       scene.add(boomstronk);
@@ -137,8 +141,8 @@ const loadAssets = () => {
     .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
     .then(geometry => {
       pickaxe = new THREE.Mesh(geometry, material);
-      pickaxe.scale.set(0.2, 0.2, 0.2);
-      pickaxe.position.x = - 60;
+      pickaxe.scale.set(0.4, 0.4, 0.4);
+      pickaxe.position.x = 600;
       pickaxe.position.y = 10;
       pickaxe.rotation.x = 0;
       pickaxe.rotation.y = 1;
@@ -173,16 +177,29 @@ const checkCollision = () => {
   const boomstronkPos = boomstronk.position;
   const pickaxePos = pickaxe.position;
 
-  const now = Date.now();
+  // const now = Date.now();
 
   kabouters.forEach(kabouter => {
     const distanceToPotgoud = potgoudPos.distanceTo(kabouter.position);
     if (distanceToPotgoud < 40) {
       //console.log(`boom potgoud`);
-      if (now - lastSynthTriggerdTime > 500) {
-        synth();
-        lastSynthTriggerdTime = now;
+      isTriggered = true;
+      if (isTriggered) {
+        if (!isPlaying) {
+          synth(isTriggered);
+          isPlaying = true;
+        }
+
       }
+      // if (now - lastSynthTriggerdTime > 500) {
+      //   synth();
+      //   lastSynthTriggerdTime = now;
+      // }
+    } else {
+      isTriggered = false;
+      isPlaying = false;
+      // synth(isTriggered);
+
     }
     const distanceToFakkel = fakkelPos.distanceTo(kabouter.position);
     if (distanceToFakkel < 0.4) {

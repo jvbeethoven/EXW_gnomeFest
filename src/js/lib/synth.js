@@ -1,24 +1,12 @@
 import Tone from 'tone';
 
-const synth = () => {
+const synth = isTriggered => {
   // console.log(Tone);
+  console.log(isTriggered);
 
-  const synth = new Tone.PolySynth(3, Tone.Synth, {
-    oscillator: {
-      type: `fatsawtooth`,
-      count: 3,
-      spread: 30
-    },
-    envelope: {
-      attack: 0.01,
-      decay: 0.1,
-      sustain: 0.5,
-      release: 0.4,
-      attackCurve: `exponential`
-    },
-  }).toMaster();
+  const synth = new Tone.FMSynth().toMaster();
 
-  synth.triggerAttackRelease(`C4`, `8n`);
+  synth.triggerAttack(`C4`, `8n`);
 };
 
 export default synth;
