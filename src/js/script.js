@@ -1,4 +1,4 @@
-import synth from './lib/synth';
+//import synth from './lib/synth';
 import * as THREE from 'three';
 import DragControls from 'three-dragcontrols';
 
@@ -17,7 +17,7 @@ const mesh2 = new THREE.Mesh(cylindergeometry, material);
 const loader = new THREE.JSONLoader();
 const kabouters = [];
 
-// const lastSynthTriggerdTime = 0;
+//let lastSynthTriggerdTime = 0;
 
 let isTriggered = false;
 let isPlaying = false;
@@ -45,11 +45,11 @@ const createScene = () => {
   scene = new THREE.Scene();
   // scene.background = new THREE.Color(0xff0000);
 
-  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 1, 100);
+  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 50, 300);
   // camera = new THREE.PerspectiveCamera(60, WIDTH / HEIGHT, 1, 10000);
 
-  camera.position.set(- 10, 5, 100);
-  camera.rotation.X = 0;
+  camera.position.set(- 10, 10, 100);
+  camera.rotation.x = 0;
   camera.rotation.y = 0;
   camera.rotation.z = 0;
 
@@ -177,25 +177,30 @@ const checkCollision = () => {
   const boomstronkPos = boomstronk.position;
   const pickaxePos = pickaxe.position;
 
-  // const now = Date.now();
+  //const now = Date.now();
 
   kabouters.forEach(kabouter => {
     const distanceToPotgoud = potgoudPos.distanceTo(kabouter.position);
-    if (distanceToPotgoud < 40) {
+    console.log(distanceToPotgoud);
+    if (distanceToPotgoud <= 100) {
       //console.log(`boom potgoud`);
       isTriggered = true;
       if (isTriggered) {
         if (!isPlaying) {
-          synth(isTriggered);
+          console.log(`isPlaying`);
+          //synth(isTriggered);
           isPlaying = true;
         }
-
       }
-      // if (now - lastSynthTriggerdTime > 500) {
-      //   synth();
-      //   lastSynthTriggerdTime = now;
-      // }
+      /*
+      if (now - lastSynthTriggerdTime > 500) {
+        //synth();
+        lastSynthTriggerdTime = now;
+      }
+      */
     } else {
+
+      console.log(`isNotPlaying`);
       isTriggered = false;
       isPlaying = false;
       // synth(isTriggered);
