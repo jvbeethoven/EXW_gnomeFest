@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import DragControls from 'three-dragcontrols';
+import ProduceMusic from './Models/ProduceMusic';
 
 let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container,
   scene, camera, WIDTH, HEIGHT;
@@ -15,9 +16,6 @@ const mesh2 = new THREE.Mesh(cylindergeometry, material);
 
 const loader = new THREE.JSONLoader();
 const kabouters = [];
-
-let isTriggered = false;
-let isPlaying = false;
 
 const init = () => {
 
@@ -162,37 +160,87 @@ const checkCollision = () => {
 
   kabouters.forEach(kabouter => {
     const distanceToPotgoud = potgoudPos.distanceTo(kabouter.position);
-    console.log(distanceToPotgoud);
+    const potgoudMusic = new ProduceMusic(1, false, false);
     if (distanceToPotgoud <= 100) {
-      isTriggered = true;
-      if (isTriggered) {
-        if (!isPlaying) {
-          console.log(`isPlaying`);
-          isPlaying = true;
-        }
+
+      if (!potgoudMusic.isPlaying) {
+        potgoudMusic.playMusic(1);
+        potgoudMusic.isPlaying = true;
       }
-    } else {
-
-      console.log(`isNotPlaying`);
-      isTriggered = false;
-      isPlaying = false;
-
+      if (potgoudMusic.isPlaying) {
+        potgoudMusic.isPlaying = true;
+      }
+    } else if (distanceToPotgoud > 120) {
+      potgoudMusic.stopMusic(1);
+      potgoudMusic.isPlaying = false;
     }
+
+
     const distanceToFakkel = fakkelPos.distanceTo(kabouter.position);
-    if (distanceToFakkel < 0.4) {
-      console.log(`boom fakkel`);
+    const fakkelMusic = new ProduceMusic(2, false, false);
+    if (distanceToFakkel <= 100) {
+
+      if (!fakkelMusic.isPlaying) {
+        fakkelMusic.playMusic(2);
+        fakkelMusic.isPlaying = true;
+      }
+      if (fakkelMusic.isPlaying) {
+        fakkelMusic.isPlaying = true;
+      }
+    } else if (distanceToFakkel > 120) {
+      fakkelMusic.stopMusic(2);
+      fakkelMusic.isPlaying = false;
     }
+
+
     const distanceToPaddestoel = paddestoelPos.distanceTo(kabouter.position);
-    if (distanceToPaddestoel < 0.4) {
-      console.log(`boom paddestoel`);
+    const paddestoelMusic = new ProduceMusic(3, false, false);
+    if (distanceToPaddestoel <= 100) {
+
+      if (!paddestoelMusic.isPlaying) {
+        paddestoelMusic.playMusic(3);
+        paddestoelMusic.isPlaying = true;
+      }
+      if (paddestoelMusic.isPlaying) {
+        paddestoelMusic.isPlaying = true;
+      }
+    } else if (distanceToPaddestoel > 120) {
+      paddestoelMusic.stopMusic(3);
+      paddestoelMusic.isPlaying = false;
     }
+
+
     const distanceToBoomstronk = boomstronkPos.distanceTo(kabouter.position);
-    if (distanceToBoomstronk < 0.4) {
-      console.log(`boom boomstronk`);
+    const BoomstronkMusic = new ProduceMusic(4, false, false);
+    if (distanceToBoomstronk <= 100) {
+
+      if (!BoomstronkMusic.isPlaying) {
+        BoomstronkMusic.playMusic(4);
+        BoomstronkMusic.isPlaying = true;
+      }
+      if (BoomstronkMusic.isPlaying) {
+        BoomstronkMusic.isPlaying = true;
+      }
+    } else if (distanceToBoomstronk > 120) {
+      BoomstronkMusic.stopMusic(4);
+      BoomstronkMusic.isPlaying = false;
     }
+
+
     const distanceToPickaxe = pickaxePos.distanceTo(kabouter.position);
-    if (distanceToPickaxe < 0.4) {
-      console.log(`boom pickaxe`);
+    const pickaxeMusic = new ProduceMusic(5, false, false);
+    if (distanceToPickaxe <= 100) {
+
+      if (!pickaxeMusic.isPlaying) {
+        pickaxeMusic.playMusic(5);
+        pickaxeMusic.isPlaying = true;
+      }
+      if (pickaxeMusic.isPlaying) {
+        pickaxeMusic.isPlaying = true;
+      }
+    } else if (distanceToPickaxe > 120) {
+      pickaxeMusic.stopMusic(5);
+      pickaxeMusic.isPlaying = false;
     }
   });
 
