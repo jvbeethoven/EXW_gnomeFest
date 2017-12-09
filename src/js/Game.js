@@ -5,14 +5,31 @@ import ProduceMusic from './Models/ProduceMusic';
 let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container,
   scene, camera, WIDTH, HEIGHT;
 
-const renderer = new THREE.WebGLRenderer(
-  {antialias: true,
-    alpha: true});
+const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap2.png`);
+const colormap = THREE.ImageUtils.loadTexture(`./assets/img/abstracttexture.jpeg`);
+
+const testmaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+  specular: 100,
+  emissive: 100,
+  shininess: 3
+});
+
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: true
+});
 const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
 const cylindergeometry = new THREE.CylinderGeometry(.2, .2, .2, .2);
 const material = new THREE.MeshNormalMaterial();
 const mesh = new THREE.Mesh(geometry, material);
 const mesh2 = new THREE.Mesh(cylindergeometry, material);
+
+
 
 const loader = new THREE.JSONLoader();
 const kabouters = [];
@@ -42,6 +59,10 @@ const createScene = () => {
   camera.rotation.x = 0;
   camera.rotation.y = 0;
   camera.rotation.z = 0;
+
+  const light = new THREE.DirectionalLight(0xffffff);
+  light.position.set(0, 1, 1).normalize();
+  scene.add(light);
 
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -83,7 +104,7 @@ const loadAssets = () => {
 
   return loadWithJSONLoader(`./assets/json/potgoud.json`)
     .then(geometry => {
-      potgoud = new THREE.Mesh(geometry, material);
+      potgoud = new THREE.Mesh(geometry, testmaterial);
       potgoud.scale.set(0.3, 0.3, 0.3);
       potgoud.position.x = - 600;
       potgoud.position.y = 0;
@@ -93,7 +114,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/fakkel.json`))
     .then(geometry => {
-      fakkel = new THREE.Mesh(geometry, material);
+      fakkel = new THREE.Mesh(geometry, testmaterial);
       fakkel.scale.set(0.4, 0.4, 0.4);
       fakkel.position.x = - 300;
       fakkel.position.y = 0;
@@ -164,7 +185,10 @@ const checkCollision = () => {
     if (distanceToPotgoud <= 100) {
 
       if (!potgoudMusic.isPlaying) {
-        potgoudMusic.playMusic(1);
+        //potgoudMusic.playMusic(1);
+        console.log(potgoud);
+        potgoud.material.displacementScale = Math.floor((Math.random() * 20) + 1);
+        potgoud.material.displacementBias = Math.floor((Math.random() * 20) + 1);
         potgoudMusic.isPlaying = true;
       }
       if (potgoudMusic.isPlaying) {
@@ -173,6 +197,8 @@ const checkCollision = () => {
     } else if (distanceToPotgoud > 120) {
       potgoudMusic.stopMusic(1);
       potgoudMusic.isPlaying = false;
+      potgoud.material.displacementScale = 0;
+      potgoud.material.displacementBias = 0;
     }
 
 
