@@ -35,3 +35,8 @@ h1 {
   letter-spacing: .3rem;
   color: #ff71ce;
 }
+
+.unselectable {
+  user-select: none;
+  z-index: -1;
+}
