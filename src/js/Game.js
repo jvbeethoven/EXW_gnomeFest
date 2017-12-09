@@ -35,13 +35,25 @@ const loader = new THREE.JSONLoader();
 const kabouters = [];
 
 const init = () => {
-
+  createLoadingScreen();
   createScene();
-  addText();
   loadAssets()
     .then(() => render())
+    .then(() => removeLoadingScreen())
+    .then(() => addText())
     .then(() => makeDraggable());
+};
 
+const createLoadingScreen = () => {
+  const loadingContainer = document.createElement(`div`);
+  loadingContainer.classList.add(`loadingContainer`);
+  document.body.appendChild(loadingContainer);
+
+  const loading = document.createElement(`h1`);
+  loading.innerHTML = `loading`;
+  loading.classList.add(`loading`);
+  loading.classList.add(`unselectable`);
+  loadingContainer.appendChild(loading);
 };
 
 const createScene = () => {
@@ -71,6 +83,7 @@ const createScene = () => {
 
   scene.add(mesh2);
   scene.add(mesh);
+
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
   window.addEventListener(`resize`, handleWindowResize, false);
@@ -78,7 +91,6 @@ const createScene = () => {
 };
 
 const addText = () => {
-
   const title = document.createElement(`h1`);
   title.innerHTML = `GnomeForest`;
   title.classList.add(`Title`);
@@ -201,7 +213,6 @@ const checkCollision = () => {
       potgoud.material.displacementBias = 0;
     }
 
-
     const distanceToFakkel = fakkelPos.distanceTo(kabouter.position);
     const fakkelMusic = new ProduceMusic(2, false, false);
     if (distanceToFakkel <= 100) {
@@ -270,6 +281,11 @@ const checkCollision = () => {
     }
   });
 
+};
+
+const removeLoadingScreen = () => {
+  const elem = document.querySelector(`.loadingContainer`);
+  elem.classList.add(`hide`);
 };
 
 const render = () => {
