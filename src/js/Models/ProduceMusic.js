@@ -64,6 +64,7 @@ export default class ProduceMusic {
     if (target === 5) {
       this.playFifth();
     }
+
   };
 
   stopMusic = target => {
@@ -93,7 +94,6 @@ export default class ProduceMusic {
   playDrums = () => {
     // polySynth.triggerAttack([`C4`, `E4`, `G4`, `B4`]);
     synthA.triggerAttack(`4n`);
-    console.log(`playing drums`);
 
   };
 
@@ -105,7 +105,6 @@ export default class ProduceMusic {
 
   playFifth = () => {
     synthB.triggerAttack(`C1`);
-    console.log(`playing fifth`);
   };
 
   stopFifth = () => {
