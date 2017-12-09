@@ -92,7 +92,7 @@ const createScene = () => {
 
 const addText = () => {
   const title = document.createElement(`h1`);
-  title.innerHTML = `GnomeForest`;
+  title.innerHTML = `GnomeFest`;
   title.classList.add(`Title`);
   title.classList.add(`unselectable`);
   document.body.appendChild(title);
@@ -197,8 +197,7 @@ const checkCollision = () => {
     if (distanceToPotgoud <= 100) {
 
       if (!potgoudMusic.isPlaying) {
-        //potgoudMusic.playMusic(1);
-        console.log(potgoud);
+        potgoudMusic.playMusic(1);
         potgoud.material.displacementScale = Math.floor((Math.random() * 20) + 1);
         potgoud.material.displacementBias = Math.floor((Math.random() * 20) + 1);
         potgoudMusic.isPlaying = true;
