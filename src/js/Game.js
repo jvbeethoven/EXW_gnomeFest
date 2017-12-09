@@ -19,21 +19,26 @@ const kabouters = [];
 let isTriggered = false;
 let isPlaying = false;
 
-//const loadingManager = new THREE.LoadingManager();
-let RESOURCES_LOADED = false;
-
-
 const init = () => {
-
-  createScene();
   createLoadingScreen();
+  createScene();
   loadAssets()
     .then(() => render())
+    .then(() => removeLoadingScreen())
     .then(() => addText())
     .then(() => makeDraggable());
+};
 
-  console.log(RESOURCES_LOADED);
+const createLoadingScreen = () => {
+  const loadingContainer = document.createElement(`div`);
+  loadingContainer.classList.add(`loadingContainer`);
+  document.body.appendChild(loadingContainer);
 
+  const loading = document.createElement(`h1`);
+  loading.innerHTML = `loading`;
+  loading.classList.add(`loading`);
+  loading.classList.add(`unselectable`);
+  loadingContainer.appendChild(loading);
 };
 
 const createScene = () => {
@@ -64,14 +69,6 @@ const createScene = () => {
   document.body.appendChild(renderer.domElement);
   window.addEventListener(`resize`, handleWindowResize, false);
 
-};
-
-const createLoadingScreen = () => {
-  const loading = document.createElement(`h1`);
-  loading.innerHTML = `loading`;
-  loading.classList.add(`loading`);
-  loading.classList.add(`unselectable`);
-  document.body.appendChild(loading);
 };
 
 const addText = () => {
@@ -213,11 +210,12 @@ const checkCollision = () => {
 
 };
 
-const render = () => {
-  RESOURCES_LOADED = true;
-  const elem = document.querySelector(`.loading`);
+const removeLoadingScreen = () => {
+  const elem = document.querySelector(`.loadingContainer`);
   elem.classList.add(`hide`);
+};
 
+const render = () => {
   renderer.render(scene, camera);
   checkCollision();
   requestAnimationFrame(render);
