@@ -19,13 +19,20 @@ const kabouters = [];
 let isTriggered = false;
 let isPlaying = false;
 
+//const loadingManager = new THREE.LoadingManager();
+let RESOURCES_LOADED = false;
+
+
 const init = () => {
 
   createScene();
-  addText();
+  createLoadingScreen();
   loadAssets()
     .then(() => render())
+    .then(() => addText())
     .then(() => makeDraggable());
+
+  console.log(RESOURCES_LOADED);
 
 };
 
@@ -52,14 +59,22 @@ const createScene = () => {
 
   scene.add(mesh2);
   scene.add(mesh);
+
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
   window.addEventListener(`resize`, handleWindowResize, false);
 
 };
 
-const addText = () => {
+const createLoadingScreen = () => {
+  const loading = document.createElement(`h1`);
+  loading.innerHTML = `loading`;
+  loading.classList.add(`loading`);
+  loading.classList.add(`unselectable`);
+  document.body.appendChild(loading);
+};
 
+const addText = () => {
   const title = document.createElement(`h1`);
   title.innerHTML = `GnomeForest`;
   title.classList.add(`Title`);
@@ -162,18 +177,18 @@ const checkCollision = () => {
 
   kabouters.forEach(kabouter => {
     const distanceToPotgoud = potgoudPos.distanceTo(kabouter.position);
-    console.log(distanceToPotgoud);
+    //console.log(distanceToPotgoud);
     if (distanceToPotgoud <= 100) {
       isTriggered = true;
       if (isTriggered) {
         if (!isPlaying) {
-          console.log(`isPlaying`);
+          //console.log(`isPlaying`);
           isPlaying = true;
         }
       }
     } else {
 
-      console.log(`isNotPlaying`);
+      //console.log(`isNotPlaying`);
       isTriggered = false;
       isPlaying = false;
 
@@ -199,6 +214,10 @@ const checkCollision = () => {
 };
 
 const render = () => {
+  RESOURCES_LOADED = true;
+  const elem = document.querySelector(`.loading`);
+  elem.classList.add(`hide`);
+
   renderer.render(scene, camera);
   checkCollision();
   requestAnimationFrame(render);

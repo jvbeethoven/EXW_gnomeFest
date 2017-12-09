@@ -25,6 +25,15 @@ h1 {
   color: #ff71ce;
 }
 
+.loading {
+  font-size: 3rem;
+  color: red;
+  top: 50%;
+  left: 50%;
+  font-family: vcr;
+  z-index: 10;
+}
+
 .exp {
   max-width: 45rem;
   position: absolute;
@@ -39,4 +48,8 @@ h1 {
 .unselectable {
   user-select: none;
   z-index: -1;
+}
+
+.hide {
+  display: none;
 }
