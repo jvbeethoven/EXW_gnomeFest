@@ -4,15 +4,15 @@ import Tone from 'tone';
 
 const synthA = new Tone.Synth({
   oscillator: {
-    type: `fmsquare`,
+    type: `square`,
     modulationType: `sawtooth`,
     modulationIndex: 3,
     harmonicity: 3.4
   },
   envelope: {
-    attack: 0.001,
+    attack: 0.03,
     decay: 0.1,
-    sustain: 0.1,
+    sustain: 0.4,
     release: 0.1
   }
 }).toMaster();
@@ -103,7 +103,7 @@ export default class ProduceMusic {
 
   playDrums = () => {
     // polySynth.triggerAttack([`C4`, `E4`, `G4`, `B4`]);
-    synthA.triggerAttack(`C4`);
+    synthA.triggerAttack(`4n`);
 
   };
 
