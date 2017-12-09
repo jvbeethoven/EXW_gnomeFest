@@ -2,19 +2,41 @@
 @import 'vars';
 
 html {
-  background-color: var(--bg-color);
+  background-image: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+  /*background-color: var(--bg-color);*/
 }
 
 body {
   font-family: Roboto;
   font-size: 1.6rem;
-  margin: 2rem;
-}
-
-header {
-  margin: 2rem 0;
 }
 
 h1 {
   font-size: 3rem;
+}
+
+.Title {
+  position: absolute;
+  top: 10%;
+  left: 40%;
+  font-family: vcr;
+  font-size: 4rem;
+  letter-spacing: 1rem;
+  color: #ff71ce;
+}
+
+.exp {
+  max-width: 45rem;
+  position: absolute;
+  top: 77%;
+  left: 3%;
+  font-family: vcr;
+  font-size: 2rem;
+  letter-spacing: .3rem;
+  color: #ff71ce;
+}
+
+.unselectable {
+  user-select: none;
+  z-index: -1;
 }

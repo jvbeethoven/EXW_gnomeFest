@@ -1,9 +1,7 @@
-
+import Game from './Game';
 
 const init = () => {
-
-  console.log(`Hello, EXW_musicForest`);
-
+  Game();
 };
 
 init();
