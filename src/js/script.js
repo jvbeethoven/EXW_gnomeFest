@@ -184,70 +184,81 @@ const makeDraggable = () => {
 };
 
 const checkCollision = () => {
-  const potgoudPos = potgoud.position;
-  const fakkelPos = fakkel.position;
-  const paddestoelPos = paddestoel.position;
-  const boomstronkPos = boomstronk.position;
-  const pickaxePos = pickaxe.position;
 
-
-  kabouters.forEach(kabouter => {
-    const distanceToPotgoud = potgoudPos.distanceTo(kabouter.position);
-    let potgoudIsPlaying = false;
-    if (distanceToPotgoud <= 100 && !potgoudIsPlaying) {
-      synthA.triggerAttack(`4n`);
-      potgoudIsPlaying = true;
-      potgoud.material.displacementScale = Math.floor((Math.random() * 20) + 1);
-      potgoud.material.displacementBias = Math.floor((Math.random() * 20) + 1);
-
-    } else if (distanceToPotgoud > 100) {
-      synthA.triggerRelease();
-      potgoudIsPlaying = false;
-      potgoud.material.displacementScale = 0;
-      potgoud.material.displacementBias = 0;
-    }
-
-    const distanceToFakkel = fakkelPos.distanceTo(kabouter.position);
-    let fakkelIsPlaying = false;
-    if (distanceToFakkel <= 100 && !fakkelIsPlaying) {
-      fakkelIsPlaying = true;
-
-    } else if (distanceToFakkel > 120) {
-      fakkelIsPlaying = false;
-    }
-
-    const distanceToPaddestoel = paddestoelPos.distanceTo(kabouter.position);
-    let paddestoelIsPlaying = false;
-    if (distanceToPaddestoel <= 100 && !paddestoelIsPlaying) {
-      paddestoelIsPlaying = true;
-
-    } else if (distanceToPaddestoel > 120) {
-      paddestoelIsPlaying = false;
-    }
-
-    const distanceToBoomstronk = boomstronkPos.distanceTo(kabouter.position);
-    let boomstronkIsPlaying = false;
-    if (distanceToBoomstronk <= 100 && !boomstronkIsPlaying) {
-      boomstronkIsPlaying = true;
-
-    } else if (distanceToBoomstronk > 120) {
-      boomstronkIsPlaying = false;
-    }
-
-
-    const distanceToPickaxe = pickaxePos.distanceTo(kabouter.position);
-    let pickaxeIsPlaying = false;
-    if (distanceToPickaxe <= 100 && !pickaxeIsPlaying) {
-      synthB.triggerAttack(`C1`);
-      pickaxeIsPlaying = true;
-
-    } else if (distanceToPickaxe > 100) {
-      synthB.triggerRelease();
-      pickaxeIsPlaying = false;
-    }
+//check potgoud collision
+  const potgoudToGnome = kabouters.filter(kabouter => {
+    const distancePotgoud = potgoud.position.distanceTo(kabouter.position);
+    if (distancePotgoud <= 100) { return true;
+    } else { return false;}
   });
 
+  if (potgoudToGnome.length > 0) {
+    // synthB.triggerAttack(`c1`);
+    console.log(`potgoud hit`);
+    // potgoud.material.displacementScale = Math.floor((Math.random() * 20) + 1);
+    // potgoud.material.displacementBias = Math.floor((Math.random() * 20) + 1);
+  } else {
+    // synthB.triggerRelease();
+    // potgoud.material.displacementScale = 0;
+    // potgoud.material.displacementBias = 0;
+  }
+
+//check fakkel collision
+  const fakkelToGnome = kabouters.filter(kabouter => {
+    const distanceFakkel = fakkel.position.distanceTo(kabouter.position);
+    if (distanceFakkel <= 100) { return true;
+    } else { return false;}
+  });
+
+  if (fakkelToGnome.length > 0) {
+    synthA.triggerAttack(`4n`);
+  } else {
+    synthA.triggerRelease();
+  }
+
+//check paddestoel collision
+  const paddestoelToGnome = kabouters.filter(kabouter => {
+    const distancePaddestoel = paddestoel.position.distanceTo(kabouter.position);
+    if (distancePaddestoel <= 100) { return true;
+    } else { return false;}
+  });
+
+  if (paddestoelToGnome.length > 0) {
+    // synthB.triggerAttack(`c1`);
+    console.log(`paddestoel hit`);
+  } else {
+    // synthB.triggerRelease();
+  }
+
+//check boomstronk collision
+  const boomstronkToGnome = kabouters.filter(kabouter => {
+    const distanceBoomstronk = boomstronk.position.distanceTo(kabouter.position);
+    if (distanceBoomstronk <= 100) { return true;
+    } else { return false;}
+  });
+
+  if (boomstronkToGnome.length > 0) {
+    // synthB.triggerAttack(`c1`);
+    console.log(`boomstronk hit`);
+  } else {
+    synthB.triggerRelease();
+  }
+
+//check pickaxe collision
+  const pickaxeToGnome = kabouters.filter(kabouter => {
+    const distancePickaxe = pickaxe.position.distanceTo(kabouter.position);
+    if (distancePickaxe <= 100) { return true;
+    } else { return false;}
+  });
+
+  if (pickaxeToGnome.length > 0) {
+    synthB.triggerAttack(`c1`);
+  } else {
+    synthB.triggerRelease();
+  }
+
 };
+
 
 const removeLoadingScreen = () => {
   const elem = document.querySelector(`.loadingContainer`);
