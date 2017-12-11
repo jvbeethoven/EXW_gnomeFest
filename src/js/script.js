@@ -1,8 +1,10 @@
 import * as THREE from 'three';
+import * as DAT from 'dat.gui/build/dat.gui.js';
 import DragControls from 'three-dragcontrols';
 import Tone from 'tone';
 
-let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container,
+
+let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container, controls,
   scene, camera, WIDTH, HEIGHT;
 
 const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap2.png`);
@@ -17,6 +19,8 @@ const testmaterial = new THREE.MeshPhongMaterial({
   emissive: 100,
   shininess: 3
 });
+
+colormap.minFilter = THREE.LinearFilter;
 
 
 const renderer = new THREE.WebGLRenderer({
@@ -35,6 +39,7 @@ const loader = new THREE.JSONLoader();
 const kabouters = [];
 
 const init = () => {
+  createControls();
   createLoadingScreen();
   createScene();
   loadAssets()
@@ -42,6 +47,16 @@ const init = () => {
     .then(() => removeLoadingScreen())
     .then(() => addText())
     .then(() => makeDraggable());
+};
+
+const createControls = () => {
+  const gui = new DAT.GUI({
+    height: 5 * 32 - 1
+  });
+  controls = {
+    displacement: 10
+  };
+  gui.add(controls, `displacement`, 5, 100);
 };
 
 const createLoadingScreen = () => {
@@ -195,7 +210,7 @@ const checkCollision = () => {
   if (potgoudToGnome.length > 0) {
     // synthB.triggerAttack(`c1`);
     console.log(`potgoud hit`);
-    // potgoud.material.displacementScale = Math.floor((Math.random() * 20) + 1);
+    potgoud.material.displacementScale = controls.displacement;
     // potgoud.material.displacementBias = Math.floor((Math.random() * 20) + 1);
   } else {
     // synthB.triggerRelease();
