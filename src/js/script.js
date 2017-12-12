@@ -255,6 +255,7 @@ const checkCollision = () => {
     }
   } else {
     fakkelTriggered = false;
+    synthA.triggerRelease();
   }
 
 //check paddestoel collision
@@ -271,6 +272,7 @@ const checkCollision = () => {
     }
   } else {
     paddestoelTriggered = false;
+    piano.triggerRelease();
   }
 
 //check boomstronk collision
