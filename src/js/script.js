@@ -54,9 +54,13 @@ const createControls = () => {
     height: 5 * 32 - 1
   });
   controls = {
-    displacement: 10
+    displacement: 10,
+    rotation: 0,
+    frequencySynth: 2
   };
   gui.add(controls, `displacement`, 5, 100);
+  gui.add(controls, `rotation`, 0, 20);
+  gui.add(controls, `frequencySynth`, 0, 20);
 };
 
 const createLoadingScreen = () => {
@@ -69,6 +73,14 @@ const createLoadingScreen = () => {
   loading.classList.add(`loading`);
   loading.classList.add(`unselectable`);
   loadingContainer.appendChild(loading);
+
+  const loadingGif = document.createElement(`img`);
+  loadingGif.src = `https://media.giphy.com/media/xUOxf2Z6fLwKBTfGTK/giphy.gif`;
+  loadingGif.title = `loadingGif`;
+  loadingGif.width = 240;
+  loadingGif.height = 240;
+  loadingGif.classList.add(`loading`);
+  loadingContainer.appendChild(loadingGif);
 };
 
 const createScene = () => {
@@ -211,6 +223,7 @@ const checkCollision = () => {
     // synthB.triggerAttack(`c1`);
     console.log(`potgoud hit`);
     potgoud.material.displacementScale = controls.displacement;
+    potgoud.rotation.x += controls.rotation;
     // potgoud.material.displacementBias = Math.floor((Math.random() * 20) + 1);
   } else {
     // synthB.triggerRelease();

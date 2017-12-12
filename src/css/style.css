@@ -34,8 +34,10 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: absolute;
+  top: 45%;
+  left: 45%;
   font-size: 3rem;
-  top: 20rem;
   color: red;
   font-family: vcr;
 }
