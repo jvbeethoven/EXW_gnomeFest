@@ -37,15 +37,30 @@ const kabouters = [];
 
 const init = () => {
 
-  createControls();
-  createLoadingScreen();
-  createScene();
-  loadAssets()
-    .then(() => render())
-    .then(() => removeLoadingScreen())
-    .then(() => addText())
-    .then(() => makeDraggable());
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+    createError();
+  } else {
+    createControls();
+    createLoadingScreen();
+    createScene();
+    loadAssets()
+      .then(() => render())
+      .then(() => removeLoadingScreen())
+      .then(() => addText())
+      .then(() => makeDraggable());
+  }
+};
 
+const createError = () => {
+  const errorContainer = document.createElement(`div`);
+  errorContainer.classList.add(`errorContainer`);
+  document.body.appendChild(errorContainer);
+
+  const loading = document.createElement(`h1`);
+  loading.innerHTML = `This Experiment is not supported on your device. :(`;
+  loading.classList.add(`error`);
+  loading.classList.add(`unselectable`);
+  errorContainer.appendChild(loading);
 };
 
 const createControls = () => {
