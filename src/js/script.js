@@ -7,7 +7,7 @@ import Tone from 'tone';
 let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container, controls,
   scene, camera, WIDTH, HEIGHT;
 
-const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap2.png`);
+const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
 const colormap = THREE.ImageUtils.loadTexture(`./assets/img/abstracttexture.jpeg`);
 
 const testmaterial = new THREE.MeshPhongMaterial({
@@ -15,9 +15,6 @@ const testmaterial = new THREE.MeshPhongMaterial({
   displacementMap: displacementMap,
   displacementScale: 0,
   displacementBias: 0,
-  specular: 100,
-  emissive: 100,
-  shininess: 3
 });
 
 colormap.minFilter = THREE.LinearFilter;
@@ -56,12 +53,12 @@ const createControls = () => {
     height: 5 * 32 - 1
   });
   controls = {
-    displacement: 10,
-    rotation: 0,
+    displacement: .1,
+    rotation: .01,
     frequencySynth: 2
   };
-  gui.add(controls, `displacement`, 5, 100);
-  gui.add(controls, `rotation`, 0, 20);
+  gui.add(controls, `displacement`, .1, 10000, .001);
+  gui.add(controls, `rotation`, 0, .1, .01);
   gui.add(controls, `frequencySynth`, 0, 20);
 };
 
@@ -77,7 +74,7 @@ const createLoadingScreen = () => {
   loadingContainer.appendChild(loading);
 
   const loadingGif = document.createElement(`img`);
-  loadingGif.src = `https://media.giphy.com/media/xUOxf2Z6fLwKBTfGTK/giphy.gif`;
+  loadingGif.src = `./assets/img/loader.gif`;
   loadingGif.title = `loadingGif`;
   loadingGif.width = 240;
   loadingGif.height = 240;
@@ -94,7 +91,7 @@ const createScene = () => {
   WIDTH = window.innerWidth;
 
   scene = new THREE.Scene();
-  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 50, 300);
+  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 200, 500);
 
   camera.position.set(- 10, 10, 100);
   camera.rotation.x = 0;
@@ -104,6 +101,9 @@ const createScene = () => {
   const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(0, 1, 1).normalize();
   scene.add(light);
+
+  const ambientLight = new THREE.AmbientLight(0x404040); // soft white ambientLight
+  scene.add(ambientLight);
 
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -149,13 +149,13 @@ const loadAssets = () => {
       potgoud.scale.set(0.3, 0.3, 0.3);
       potgoud.position.x = - 600;
       potgoud.position.y = 0;
-      potgoud.position.z = 0;
+      potgoud.position.z = - 70;
       potgoud.rotation.x = 0;
       scene.add(potgoud);
     })
     .then(() => loadWithJSONLoader(`./assets/json/fakkel.json`))
     .then(geometry => {
-      fakkel = new THREE.Mesh(geometry, testmaterial);
+      fakkel = new THREE.Mesh(geometry, material);
       fakkel.scale.set(0.4, 0.4, 0.4);
       fakkel.position.x = - 300;
       fakkel.position.y = 0;
@@ -224,10 +224,12 @@ const checkCollision = () => {
   if (potgoudToGnome.length > 0) {
     // synthB.triggerAttack(`c1`);
     console.log(`potgoud hit`);
-    potgoud.material.displacementScale = controls.displacement;
+    potgoud.material.displacementScale += controls.displacement;
     potgoud.rotation.x += controls.rotation;
+    potgoud.rotation.y += controls.rotation;
     // potgoud.material.displacementBias = Math.floor((Math.random() * 20) + 1);
   } else {
+    potgoud.material.displacementScale = 0;
     // synthB.triggerRelease();
     // potgoud.material.displacementScale = 0;
     // potgoud.material.displacementBias = 0;
