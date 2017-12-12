@@ -39,6 +39,7 @@ const loader = new THREE.JSONLoader();
 const kabouters = [];
 
 const init = () => {
+
   createControls();
   createLoadingScreen();
   createScene();
@@ -47,6 +48,7 @@ const init = () => {
     .then(() => removeLoadingScreen())
     .then(() => addText())
     .then(() => makeDraggable());
+
 };
 
 const createControls = () => {
