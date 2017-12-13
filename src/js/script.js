@@ -7,6 +7,12 @@ import Tone from 'tone';
 let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container, controls,
   scene, camera, WIDTH, HEIGHT;
 
+let potgoudTriggered = false;
+let fakkelTriggered = false;
+let paddestoelTriggered = false;
+let boomstronkTriggered = false;
+let pickaxeTriggered = false;
+
 const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
 const colormap = THREE.ImageUtils.loadTexture(`./assets/img/abstracttexture.jpeg`);
 
@@ -237,17 +243,17 @@ const checkCollision = () => {
   });
 
   if (potgoudToGnome.length > 0) {
-    // synthB.triggerAttack(`c1`);
-    console.log(`potgoud hit`);
     potgoud.material.displacementScale += controls.displacement;
     potgoud.rotation.x += controls.rotation;
     potgoud.rotation.y += controls.rotation;
-    // potgoud.material.displacementBias = Math.floor((Math.random() * 20) + 1);
+    if (!potgoudTriggered) {
+      triggerPotGoudMusic(potgoudTriggered);
+      potgoudTriggered = true;
+    }
   } else {
     potgoud.material.displacementScale = 0;
-    // synthB.triggerRelease();
-    // potgoud.material.displacementScale = 0;
-    // potgoud.material.displacementBias = 0;
+    potgoudTriggered = false;
+    synthB.triggerRelease();
   }
 
 //check fakkel collision
@@ -258,8 +264,12 @@ const checkCollision = () => {
   });
 
   if (fakkelToGnome.length > 0) {
-    synthA.triggerAttack(`4n`);
+    if (!fakkelTriggered) {
+      triggerFakkelMusic(fakkelTriggered);
+      fakkelTriggered = true;
+    }
   } else {
+    fakkelTriggered = false;
     synthA.triggerRelease();
   }
 
@@ -271,10 +281,13 @@ const checkCollision = () => {
   });
 
   if (paddestoelToGnome.length > 0) {
-    // synthB.triggerAttack(`c1`);
-    console.log(`paddestoel hit`);
+    if (!paddestoelTriggered) {
+      triggerPaddestoelMusic(paddestoelTriggered);
+      paddestoelTriggered = true;
+    }
   } else {
-    // synthB.triggerRelease();
+    paddestoelTriggered = false;
+    piano.triggerRelease();
   }
 
 //check boomstronk collision
@@ -285,10 +298,12 @@ const checkCollision = () => {
   });
 
   if (boomstronkToGnome.length > 0) {
-    // synthB.triggerAttack(`c1`);
-    console.log(`boomstronk hit`);
+    if (!boomstronkTriggered) {
+      triggerBoomstronkMusic(boomstronkTriggered);
+      boomstronkTriggered = true;
+    }
   } else {
-    synthB.triggerRelease();
+    boomstronkTriggered = false;
   }
 
 //check pickaxe collision
@@ -299,13 +314,42 @@ const checkCollision = () => {
   });
 
   if (pickaxeToGnome.length > 0) {
-    synthB.triggerAttack(`c1`);
+    if (!pickaxeTriggered) {
+      triggerPickaxeMusic(pickaxeTriggered);
+      pickaxeTriggered = true;
+    }
   } else {
-    synthB.triggerRelease();
+    pickaxeTriggered = false;
   }
 
 };
 
+
+const triggerPotGoudMusic = potgoudTriggered => {
+  if (!potgoudTriggered) {
+    synthB.triggerAttack(`c1`);
+  }
+};
+
+const triggerFakkelMusic = fakkelTriggered => {
+  if (!fakkelTriggered) {
+    synthA.triggerAttack(`4n`);
+  }
+};
+
+const triggerPaddestoelMusic = paddestoelTriggered => {
+  if (!paddestoelTriggered) {
+    piano.triggerAttack(`16n`);
+  }
+};
+
+const triggerBoomstronkMusic = boomstronkTriggered => {
+  console.log(boomstronkTriggered);
+};
+
+const triggerPickaxeMusic = pickaxeTriggered => {
+  console.log(pickaxeTriggered);
+};
 
 const removeLoadingScreen = () => {
   const elem = document.querySelector(`.loadingContainer`);
@@ -329,22 +373,38 @@ const handleWindowResize = () => {
 
 const synthA = new Tone.Synth({
   oscillator: {
-    type: `square`,
-    modulationType: `sawtooth`,
-    modulationIndex: 3,
-    harmonicity: 3.4
+    detune: 0,
+    type: `custom`,
+    partials: [2, 1, 2, 2],
+    phase: 0,
+    volume: 0
   },
   envelope: {
-    attack: 0.03,
-    decay: 0.1,
-    sustain: 0.4,
-    release: 0.1
-  }
+    attack: 0.005,
+    decay: 0.3,
+    sustain: 0.2,
+    release: 1,
+  },
+  portamento: 0.01,
+  volume: - 20
 }).toMaster();
 
 const synthB = new Tone.Synth({
   oscillator: {
     type: `triangle8`
+  },
+  envelope: {
+    attack: 2,
+    decay: 1,
+    sustain: 0.4,
+    release: 4
+  }
+}).toMaster();
+
+const piano = new Tone.Synth({
+  oscillator: {
+    type: `fmsine4`,
+    modulationType: `square`
   },
   envelope: {
     attack: 2,
