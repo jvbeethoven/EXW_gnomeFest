@@ -6,20 +6,12 @@ import MeshWithSound from './Models/MeshWithSound';
 
 
 let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, WIDTH, HEIGHT;
-// let , gnome, torch, paddestoel, log, pickaxe, container, controls,
-//   scene, camera, WIDTH, HEIGHT;
 
-const synth = new Tone.Synth({
-  oscillator: {
-    type: `triangle8`
-  },
-  envelope: {
-    attack: 2,
-    decay: 1,
-    sustain: 0.4,
-    release: 4
-  }
-}).toMaster();
+const synthA = new Tone.FMSynth().toMaster();
+const synthB = new Tone.PluckSynth().toMaster();
+const synthC = new Tone.PolySynth().toMaster();
+const synthD = new Tone.MembraneSynth().toMaster();
+const synthE = new Tone.Synth().toMaster();
 
 const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
 const colormap = THREE.ImageUtils.loadTexture(`./assets/img/abstracttexture.jpeg`);
@@ -175,7 +167,7 @@ const loadAssets = () => {
 
   return loadWithJSONLoader(`./assets/json/potOfGold.json`)
     .then(geometry => {
-      potOfGold = new MeshWithSound(geometry, testmaterial, synth);
+      potOfGold = new MeshWithSound(geometry, testmaterial, synthA);
       potOfGold.mesh.scale.set(0.3, 0.3, 0.3);
       potOfGold.mesh.position.x = - 600;
       potOfGold.mesh.position.y = 0;
@@ -185,7 +177,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/torch.json`))
     .then(geometry => {
-      torch = new MeshWithSound(geometry, testmaterial, synth);
+      torch = new MeshWithSound(geometry, testmaterial, synthB);
       torch.mesh.scale.set(0.4, 0.4, 0.4);
       torch.mesh.position.x = - 300;
       torch.mesh.position.y = 0;
@@ -194,7 +186,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/shroom.json`))
     .then(geometry => {
-      shroom = new MeshWithSound(geometry, testmaterial, synth);
+      shroom = new MeshWithSound(geometry, testmaterial, synthC);
       shroom.mesh.scale.set(0.4, 0.4, 0.4);
       shroom.mesh.position.x = 0;
       shroom.mesh.position.y = 0;
@@ -203,7 +195,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/log.json`))
     .then(geometry => {
-      log = new MeshWithSound(geometry, testmaterial, synth);
+      log = new MeshWithSound(geometry, testmaterial, synthD);
       const s = 0.9;
       log.mesh.scale.set(s, s, s);
       log.mesh.position.x = 300;
@@ -213,7 +205,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
     .then(geometry => {
-      pickaxe = new MeshWithSound(geometry, testmaterial, synth);
+      pickaxe = new MeshWithSound(geometry, testmaterial, synthE);
       pickaxe.mesh.scale.set(0.4, 0.4, 0.4);
       pickaxe.mesh.position.x = 600;
       pickaxe.mesh.position.y = 10;

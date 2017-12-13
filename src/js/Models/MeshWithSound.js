@@ -13,22 +13,17 @@ export default class MeshWithSound {
   }
 
   trigger() {
-    // this.mesh.material.displacementScale += controls.displacement;
-    // this.mesh.rotation.x += controls.rotation;
-    // this.mesh.rotation.y += controls.rotation;
-
 
     if (!this.synthIsPlaying) {
-      console.log(this.synth);
-      this.synth.triggerAttack(`C4`);
-      console.log(`play`);
+      console.log(`touched`);
+      this.synth.triggerAttack(`B4`);
     }
     this.synthIsPlaying = true;
   }
 
   release() {
-    // potgoud.mesh.material.displacementScale = 0;
     this.synthIsPlaying = false;
+    console.log(`trigger release`);
     this.synth.triggerRelease();
   }
 
