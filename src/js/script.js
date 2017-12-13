@@ -5,33 +5,21 @@ import Tone from 'tone';
 import MeshWithSound from './Models/MeshWithSound';
 
 
-let potgoud, kabouter, container, controls, scene, camera, WIDTH, HEIGHT;
-// let potgoud, kabouter, fakkel, paddestoel, boomstronk, pickaxe, container, controls,
+let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, WIDTH, HEIGHT;
+// let , gnome, torch, paddestoel, log, pickaxe, container, controls,
 //   scene, camera, WIDTH, HEIGHT;
 
-const synthA = new Tone.Synth({
+const synth = new Tone.Synth({
   oscillator: {
-    detune: 0,
-    type: `custom`,
-    partials: [2, 1, 2, 2],
-    phase: 0,
-    volume: 0
+    type: `triangle8`
   },
   envelope: {
-    attack: 0.005,
-    decay: 0.3,
-    sustain: 0.2,
-    release: 1,
-  },
-  portamento: 0.01,
-  volume: - 20
+    attack: 2,
+    decay: 1,
+    sustain: 0.4,
+    release: 4
+  }
 }).toMaster();
-
-//const potgoudTriggered = false;
-// let fakkelTriggered = false;
-// let paddestoelTriggered = false;
-// let boomstronkTriggered = false;
-// let pickaxeTriggered = false;
 
 const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
 const colormap = THREE.ImageUtils.loadTexture(`./assets/img/abstracttexture.jpeg`);
@@ -60,7 +48,7 @@ const mesh2 = new THREE.Mesh(cylindergeometry, material);
 
 
 const loader = new THREE.JSONLoader();
-const kabouters = [];
+const gnomes = [];
 
 const init = () => {
   console.log(window.innerWidth);
@@ -185,169 +173,125 @@ const loadWithJSONLoader = url => {
 
 const loadAssets = () => {
 
-  return loadWithJSONLoader(`./assets/json/potgoud.json`)
+  return loadWithJSONLoader(`./assets/json/potOfGold.json`)
     .then(geometry => {
-      // potgoud = new THREE.Mesh(geometry, testmaterial);
-      // potgoud.scale.set(0.3, 0.3, 0.3);
-      // potgoud.position.x = - 600;
-      // potgoud.position.y = 0;
-      // potgoud.position.z = - 70;
-      // potgoud.rotation.x = 0;
-      // scene.add(potgoud);
-      potgoud = new MeshWithSound(geometry, testmaterial, synthA);
-      potgoud.mesh.scale.set(0.3, 0.3, 0.3);
-      potgoud.mesh.position.x = - 600;
-      potgoud.mesh.position.y = 0;
-      potgoud.mesh.position.z = - 70;
-      potgoud.mesh.rotation.x = 0;
-      scene.add(potgoud.mesh);
+      potOfGold = new MeshWithSound(geometry, testmaterial, synth);
+      potOfGold.mesh.scale.set(0.3, 0.3, 0.3);
+      potOfGold.mesh.position.x = - 600;
+      potOfGold.mesh.position.y = 0;
+      potOfGold.mesh.position.z = - 70;
+      potOfGold.mesh.rotation.x = 0;
+      scene.add(potOfGold.mesh);
     })
-    //
-    // .then(() => loadWithJSONLoader(`./assets/json/fakkel.json`))
-    // .then(geometry => {
-    //   fakkel = new THREE.Mesh(geometry, material);
-    //   fakkel.scale.set(0.4, 0.4, 0.4);
-    //   fakkel.position.x = - 300;
-    //   fakkel.position.y = 0;
-    //   fakkel.rotation.x = 0;
-    //   scene.add(fakkel);
-    // })
-    // .then(() => loadWithJSONLoader(`./assets/json/paddestoel.json`))
-    // .then(geometry => {
-    //   paddestoel = new THREE.Mesh(geometry, material);
-    //   paddestoel.scale.set(0.4, 0.4, 0.4);
-    //   paddestoel.position.x = 0;
-    //   paddestoel.rotation.x = 0;
-    //   scene.add(paddestoel);
-    // })
-    // .then(() => loadWithJSONLoader(`./assets/json/boomstronk.json`))
-    // .then(geometry => {
-    //   boomstronk = new THREE.Mesh(geometry, material);
-    //   const s = 0.9;
-    //   boomstronk.scale.set(s, s, s);
-    //   boomstronk.position.x = 300;
-    //   boomstronk.rotation.x = - 10;
-    //   boomstronk.rotation.y = 2;
-    //   scene.add(boomstronk);
-    // })
-    // .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
-    // .then(geometry => {
-    //   pickaxe = new THREE.Mesh(geometry, material);
-    //   pickaxe.scale.set(0.4, 0.4, 0.4);
-    //   pickaxe.position.x = 600;
-    //   pickaxe.position.y = 10;
-    //   pickaxe.rotation.x = 0;
-    //   pickaxe.rotation.y = 1;
-    //   scene.add(pickaxe);
-    // })
-    .then(() => loadWithJSONLoader(`./assets/json/kabouter.json`))
+    .then(() => loadWithJSONLoader(`./assets/json/torch.json`))
+    .then(geometry => {
+      torch = new MeshWithSound(geometry, testmaterial, synth);
+      torch.mesh.scale.set(0.4, 0.4, 0.4);
+      torch.mesh.position.x = - 300;
+      torch.mesh.position.y = 0;
+      torch.mesh.rotation.x = 0;
+      scene.add(torch.mesh);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/shroom.json`))
+    .then(geometry => {
+      shroom = new MeshWithSound(geometry, testmaterial, synth);
+      shroom.mesh.scale.set(0.4, 0.4, 0.4);
+      shroom.mesh.position.x = 0;
+      shroom.mesh.position.y = 0;
+      shroom.mesh.rotation.x = 0;
+      scene.add(shroom.mesh);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/log.json`))
+    .then(geometry => {
+      log = new MeshWithSound(geometry, testmaterial, synth);
+      const s = 0.9;
+      log.mesh.scale.set(s, s, s);
+      log.mesh.position.x = 300;
+      log.mesh.rotation.x = - 10;
+      log.mesh.rotation.y = 2;
+      scene.add(log.mesh);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
+    .then(geometry => {
+      pickaxe = new MeshWithSound(geometry, testmaterial, synth);
+      pickaxe.mesh.scale.set(0.4, 0.4, 0.4);
+      pickaxe.mesh.position.x = 600;
+      pickaxe.mesh.position.y = 10;
+      pickaxe.mesh.rotation.x = 0;
+      pickaxe.mesh.rotation.y = 1;
+      scene.add(pickaxe.mesh);
+    })
+    .then(() => loadWithJSONLoader(`./assets/json/gnome.json`))
     .then(geometry => {
       for (let i = 0;i < 5;i ++) {
-        kabouter = new THREE.Mesh(geometry, material);
-        kabouter.scale.set(0.2, 0.2, 0.2);
-        kabouter.position.x = - 780 + (i * 70);
-        kabouter.position.y = - 350;
-        kabouter.position.z = 0;
-        kabouter.rotation.x = 0;
-        kabouter.rotation.y = 0;
-        kabouter.rotation.z = 0;
-        scene.add(kabouter);
-        kabouters.push(kabouter);
+        gnome = new THREE.Mesh(geometry, material);
+        gnome.scale.set(0.2, 0.2, 0.2);
+        gnome.position.x = - 780 + (i * 70);
+        gnome.position.y = - 350;
+        gnome.position.z = 0;
+        gnome.rotation.x = 0;
+        gnome.rotation.y = 0;
+        gnome.rotation.z = 0;
+        scene.add(gnome);
+        gnomes.push(gnome);
       }
     });
 };
 
-const makeDraggable = () => {
-  const dragControls = new DragControls(kabouters, camera, renderer.domElement);
-  console.log(dragControls);
-};
+const makeDraggable = () => { new DragControls(gnomes, camera, renderer.domElement);};
 
 const checkCollision = () => {
 
-//check potgoud collision
-  const potgoudToGnome = getKaboutersCloseToObject(potgoud);
+//check potOfGold collision
+  const potOfGoldToGnome = getgnomesCloseToObject(potOfGold);
 
-  if (potgoudToGnome.length > 0) {
-    potgoud.mesh.material.displacementScale += controls.displacement;
-    potgoud.mesh.rotation.x += controls.rotation;
-    potgoud.mesh.rotation.y += controls.rotation;
-    // if (!potgoudTriggered) {
-    //   triggerPotGoudMusic(potgoudTriggered);
-    //   potgoudTriggered = true;
-    // }
-    potgoud.trigger();
+  if (potOfGoldToGnome.length > 0) {
+    potOfGold.trigger();
   } else {
-    potgoud.mesh.material.displacementScale = 0;
-    // potgoudTriggered = false;
-    // synthB.triggerRelease();
-    potgoud.release();
+    potOfGold.release();
   }
 
-//check fakkel collision
-  // const fakkelToGnome = kabouters.filter(kabouter => {
-  //   const distanceFakkel = fakkel.position.distanceTo(kabouter.position);
-  //   if (distanceFakkel <= 100) { return true;
-  //   } else { return false;}
-  // });
-  //
-  // if (fakkelToGnome.length > 0) {
-  //   if (!fakkelTriggered) {
-  //     triggerFakkelMusic(fakkelTriggered);
-  //     fakkelTriggered = true;
-  //   }
-  // } else {
-  //   fakkelTriggered = false;
-  //   synthA.triggerRelease();
-  // }
+//check potOfGold collision
+  const torchToGnome = getgnomesCloseToObject(torch);
 
-//check paddestoel collision
+  if (torchToGnome.length > 0) {
+    torch.trigger();
+  } else {
+    torch.release();
+  }
 
-  // const paddestoelToGnome = getKaboutersCloseToObject(paddestoel);
-  //
-  // if (paddestoelToGnome.length > 0) {
-  //   if (!paddestoelTriggered) {
-  //     triggerPaddestoelMusic(paddestoelTriggered);
-  //     paddestoelTriggered = true;
-  //   }
-  // } else {
-  //   paddestoelTriggered = false;
-  //   piano.triggerRelease();
-  // }
+//check potOfGold collision
+  const shroomToGnome = getgnomesCloseToObject(shroom);
 
-//check boomstronk collision
-  // const boomstronkToGnome = getKaboutersCloseToObject(boomstronk);
-  //
-  // if (boomstronkToGnome.length > 0) {
-  //   if (!boomstronkTriggered) {
-  //     triggerBoomstronkMusic(boomstronkTriggered);
-  //     boomstronkTriggered = true;
-  //   }
-  // } else {
-  //   boomstronkTriggered = false;
-  // }
+  if (shroomToGnome.length > 0) {
+    shroom.trigger();
+  } else {
+    shroom.release();
+  }
 
-//check pickaxe collision
-  // const pickaxeToGnome = kabouters.filter(kabouter => {
-  //   const distancePickaxe = pickaxe.position.distanceTo(kabouter.position);
-  //   if (distancePickaxe <= 100) { return true;
-  //   } else { return false;}
-  // });
-  //
-  // if (pickaxeToGnome.length > 0) {
-  //   if (!pickaxeTriggered) {
-  //     triggerPickaxeMusic(pickaxeTriggered);
-  //     pickaxeTriggered = true;
-  //   }
-  // } else {
-  //   pickaxeTriggered = false;
-  // }
+//check potOfGold collision
+  const logToGnome = getgnomesCloseToObject(log);
+
+  if (logToGnome.length > 0) {
+    log.trigger();
+  } else {
+    log.release();
+  }
+
+//check potOfGold collision
+  const pickaxeToGnome = getgnomesCloseToObject(pickaxe);
+
+  if (pickaxeToGnome.length > 0) {
+    pickaxe.trigger();
+  } else {
+    pickaxe.release();
+  }
 
 };
 
-const getKaboutersCloseToObject = object => {
-  console.log(object);
-  return kabouters.filter(kabouter => {
-    const distance = object.mesh.position.distanceTo(kabouter.position);
+const getgnomesCloseToObject = object => {
+  return gnomes.filter(gnome => {
+    const distance = object.mesh.position.distanceTo(gnome.position);
     if (distance <= 100) { return true;
     } else { return false;}
   });

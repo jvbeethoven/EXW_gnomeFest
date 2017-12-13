@@ -4,26 +4,32 @@ export default class MeshWithSound {
 
   constructor(geometry, material, synth) {
 
-    console.log(geometry);
-    console.log(material);
-    console.log(synth);
-
-    // hier de mesh maken
+    // create Mesh
     this.mesh = new THREE.Mesh(geometry, material);
 
-    // sound configureren
+    // configurate sound
     this.synth = synth;
     this.synthIsPlaying = false;
   }
 
   trigger() {
+    // this.mesh.material.displacementScale += controls.displacement;
+    // this.mesh.rotation.x += controls.rotation;
+    // this.mesh.rotation.y += controls.rotation;
+
+
     if (!this.synthIsPlaying) {
-      // afspelen
+      console.log(this.synth);
+      this.synth.triggerAttack(`C4`);
+      console.log(`play`);
     }
+    this.synthIsPlaying = true;
   }
 
   release() {
-    // stoppen
+    // potgoud.mesh.material.displacementScale = 0;
+    this.synthIsPlaying = false;
+    this.synth.triggerRelease();
   }
 
 }
