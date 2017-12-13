@@ -2,15 +2,17 @@
 @import 'vars';
 
 html {
-  /*background-image: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);*/
+  width: 100%;
+  height: 100%;
   background: linear-gradient(to bottom, #323232 0%, #3f3f3f 40%, #1c1c1c 150%), linear-gradient(to top, rgba(255, 255, 255, .4) 0%, rgba(0, 0, 0, .25) 200%);
   background-blend-mode: multiply;
-  /*background-color: var(--bg-color);*/
 }
 
 body {
   font-family: Roboto;
   font-size: 1.6rem;
+  width: 100%;
+  height: 100%;
 }
 
 h1 {
@@ -27,21 +29,26 @@ h1 {
   color: #ff71ce;
 }
 
-.loadingContainer {
+.loadingContainer, .errorContainer {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: absolute;
 }
 
-.loading {
+.loading, .error {
+  text-align: center;
   font-size: 3rem;
   color: #ff71ce;
   text-transform: uppercase;
   font-family: vcr;
+}
+
+.error {
+  font-size: 3rem;
+  width: 20rem;
 }
 
 .exp {
