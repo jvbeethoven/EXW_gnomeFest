@@ -23,7 +23,7 @@ export default class MeshWithSound {
 
   release() {
     this.synthIsPlaying = false;
-    console.log(`trigger release`);
+    // console.log(`trigger release`);
     this.synth.triggerRelease();
   }
 

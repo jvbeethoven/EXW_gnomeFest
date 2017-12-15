@@ -3,6 +3,8 @@ import * as DAT from 'dat.gui/build/dat.gui.js';
 import DragControls from 'three-dragcontrols';
 import Tone from 'tone';
 import MeshWithSound from './Models/MeshWithSound';
+import addText from './lib/addText';
+import loadingScreen from './lib/loadingScreen';
 
 
 let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, WIDTH, HEIGHT;
@@ -37,22 +39,19 @@ const material = new THREE.MeshNormalMaterial();
 const mesh = new THREE.Mesh(geometry, material);
 const mesh2 = new THREE.Mesh(cylindergeometry, material);
 
-
-
 const loader = new THREE.JSONLoader();
 const gnomes = [];
 
 const init = () => {
-  console.log(window.innerWidth);
   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 1000) {
     createError();
   } else {
     createControls();
-    createLoadingScreen();
+    loadingScreen(true);
     createScene();
     loadAssets()
       .then(() => render())
-      .then(() => removeLoadingScreen())
+      .then(() => loadingScreen(false))
       .then(() => addText())
       .then(() => makeDraggable());
   }
@@ -82,26 +81,6 @@ const createControls = () => {
   gui.add(controls, `displacement`, .1, 10000, .001);
   gui.add(controls, `rotation`, 0, .1, .01);
   gui.add(controls, `frequencySynth`, 0, 20);
-};
-
-const createLoadingScreen = () => {
-  const loadingContainer = document.createElement(`div`);
-  loadingContainer.classList.add(`loadingContainer`);
-  document.body.appendChild(loadingContainer);
-
-  const loading = document.createElement(`h1`);
-  loading.innerHTML = `loading`;
-  loading.classList.add(`loading`);
-  loading.classList.add(`unselectable`);
-  loadingContainer.appendChild(loading);
-
-  const loadingGif = document.createElement(`img`);
-  loadingGif.src = `./assets/img/loader.gif`;
-  loadingGif.title = `loadingGif`;
-  loadingGif.width = 240;
-  loadingGif.height = 240;
-  loadingGif.classList.add(`loading`);
-  loadingContainer.appendChild(loadingGif);
 };
 
 const createScene = () => {
@@ -139,20 +118,6 @@ const createScene = () => {
   document.body.appendChild(renderer.domElement);
   window.addEventListener(`resize`, handleWindowResize, false);
 
-};
-
-const addText = () => {
-  const title = document.createElement(`h1`);
-  title.innerHTML = `GnomeFest`;
-  title.classList.add(`Title`);
-  title.classList.add(`unselectable`);
-  document.body.appendChild(title);
-
-  const explanation = document.createElement(`h1`);
-  explanation.innerHTML = `Move the gnomes to produce beautiful sounds`;
-  explanation.classList.add(`exp`);
-  explanation.classList.add(`unselectable`);
-  document.body.appendChild(explanation);
 };
 
 const loadWithJSONLoader = url => {
@@ -287,11 +252,6 @@ const getgnomesCloseToObject = object => {
     if (distance <= 100) { return true;
     } else { return false;}
   });
-};
-
-const removeLoadingScreen = () => {
-  const elem = document.querySelector(`.loadingContainer`);
-  elem.classList.add(`hide`);
 };
 
 const render = () => {
