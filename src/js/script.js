@@ -10,14 +10,57 @@ import createError from './lib/createError';
 
 let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, WIDTH, HEIGHT;
 
-const synthA = new Tone.FMSynth().toMaster();
-const synthB = new Tone.PluckSynth().toMaster();
-const synthC = new Tone.PolySynth().toMaster();
+const synthA = new Tone.Synth({
+  portamento: .01,
+  oscillator: {
+    type: `square`
+  },
+  envelope: {
+    attack: .005,
+    decay: .2,
+    sustain: .4,
+    release: 1.4
+  },
+  filterEnvelope: {
+    attack: .005,
+    decay: .1,
+    sustain: .05,
+    release: .8,
+    baseFrequency: 300,
+    octaves: 4
+  }
+}).toMaster();
+
+const synthANote = `c4`;
+
+const synthB = new Tone.MonoSynth({
+  volume: - 10,
+  envelope: {
+    attack: 0.1,
+    decay: 0.3,
+    release: 2,
+  },
+  filterEnvelope: {
+    attack: 0.001,
+    decay: 0.01,
+    sustain: 0.5,
+    baseFrequency: 200,
+    octaves: 2.6
+  }
+}).toMaster();
+const synthBNote = `D2`;
+
+// const synthA = new Tone.FMSynth().toMaster();
+// const synthB = new Tone.PluckSynth().toMaster();
+const synthC = new Tone.Synth().toMaster();
+const synthCNote = `c4`;
 const synthD = new Tone.MembraneSynth().toMaster();
+const synthDNote = `c2`;
 const synthE = new Tone.Synth().toMaster();
+const synthENote = `c2`;
 
 const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
-const colormap = THREE.ImageUtils.loadTexture(`./assets/img/abstracttexture.jpeg`);
+const colormap = THREE.ImageUtils.loadTexture(`./assets/img/textures/drug_texture.jpg`);
 
 const testmaterial = new THREE.MeshPhongMaterial({
   map: colormap,
@@ -121,47 +164,48 @@ const loadAssets = () => {
 
   return loadWithJSONLoader(`./assets/json/potOfGold.json`)
     .then(geometry => {
-      potOfGold = new MeshWithSound(geometry, testmaterial, synthA);
+      potOfGold = new MeshWithSound(geometry, testmaterial, synthA, synthANote);
       potOfGold.mesh.scale.set(0.3, 0.3, 0.3);
       potOfGold.mesh.position.x = - 600;
-      potOfGold.mesh.position.y = 0;
+      potOfGold.mesh.position.y = 150;
       potOfGold.mesh.position.z = - 70;
       potOfGold.mesh.rotation.x = 0;
       scene.add(potOfGold.mesh);
     })
     .then(() => loadWithJSONLoader(`./assets/json/torch.json`))
     .then(geometry => {
-      torch = new MeshWithSound(geometry, testmaterial, synthB);
+      torch = new MeshWithSound(geometry, testmaterial, synthB, synthBNote);
       torch.mesh.scale.set(0.4, 0.4, 0.4);
       torch.mesh.position.x = - 300;
-      torch.mesh.position.y = 0;
+      torch.mesh.position.y = - 90;
       torch.mesh.rotation.x = 0;
       scene.add(torch.mesh);
     })
     .then(() => loadWithJSONLoader(`./assets/json/shroom.json`))
     .then(geometry => {
-      shroom = new MeshWithSound(geometry, testmaterial, synthC);
+      shroom = new MeshWithSound(geometry, testmaterial, synthC, synthCNote);
       shroom.mesh.scale.set(0.4, 0.4, 0.4);
       shroom.mesh.position.x = 0;
-      shroom.mesh.position.y = 0;
+      shroom.mesh.position.y = - 200;
       shroom.mesh.rotation.x = 0;
       scene.add(shroom.mesh);
     })
     .then(() => loadWithJSONLoader(`./assets/json/log.json`))
     .then(geometry => {
-      log = new MeshWithSound(geometry, testmaterial, synthD);
+      log = new MeshWithSound(geometry, testmaterial, synthD, synthDNote);
       const s = 0.9;
       log.mesh.scale.set(s, s, s);
       log.mesh.position.x = 300;
+      log.mesh.position.y = - 200;
       log.mesh.rotation.x = - 10;
       log.mesh.rotation.y = 2;
       scene.add(log.mesh);
     })
     .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
     .then(geometry => {
-      pickaxe = new MeshWithSound(geometry, testmaterial, synthE);
+      pickaxe = new MeshWithSound(geometry, testmaterial, synthE, synthENote);
       pickaxe.mesh.scale.set(0.4, 0.4, 0.4);
-      pickaxe.mesh.position.x = 600;
+      pickaxe.mesh.position.x = 500;
       pickaxe.mesh.position.y = 10;
       pickaxe.mesh.rotation.x = 0;
       pickaxe.mesh.rotation.y = 1;
@@ -192,8 +236,10 @@ const checkCollision = () => {
 
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
+
   } else {
     potOfGold.release();
+    Tone.Transport.stop();
   }
 
   const torchToGnome = getgnomesCloseToObject(torch);

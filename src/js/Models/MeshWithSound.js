@@ -2,29 +2,39 @@ import * as THREE from 'three';
 
 export default class MeshWithSound {
 
-  constructor(geometry, material, synth) {
+  constructor(geometry, material, synth, note) {
 
     // create Mesh
     this.mesh = new THREE.Mesh(geometry, material);
 
     // configurate sound
     this.synth = synth;
+    this.note = note;
     this.synthIsPlaying = false;
   }
 
   trigger() {
 
     if (!this.synthIsPlaying) {
-      console.log(`touched`);
-      this.synth.triggerAttack(`B4`);
+      this.playMusic();
     }
     this.synthIsPlaying = true;
   }
 
   release() {
     this.synthIsPlaying = false;
-    // console.log(`trigger release`);
     this.synth.triggerRelease();
+    this.stopMusic();
+  }
+
+  playMusic() {
+
+    this.synth.triggerAttack(this.note);
+
+  }
+
+  stopMusic() {
+
   }
 
 }
