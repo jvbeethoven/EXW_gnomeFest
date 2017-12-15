@@ -5,6 +5,7 @@ import Tone from 'tone';
 import MeshWithSound from './Models/MeshWithSound';
 import addText from './lib/addText';
 import loadingScreen from './lib/loadingScreen';
+import createError from './lib/createError';
 
 
 let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, WIDTH, HEIGHT;
@@ -55,18 +56,6 @@ const init = () => {
       .then(() => addText())
       .then(() => makeDraggable());
   }
-};
-
-const createError = () => {
-  const errorContainer = document.createElement(`div`);
-  errorContainer.classList.add(`errorContainer`);
-  document.body.appendChild(errorContainer);
-
-  const loading = document.createElement(`h1`);
-  loading.innerHTML = `This Experiment is not supported on your device. :(`;
-  loading.classList.add(`error`);
-  loading.classList.add(`unselectable`);
-  errorContainer.appendChild(loading);
 };
 
 const createControls = () => {
@@ -195,11 +184,10 @@ const loadAssets = () => {
     });
 };
 
-const makeDraggable = () => { new DragControls(gnomes, camera, renderer.domElement);};
+const makeDraggable = () => new DragControls(gnomes, camera, renderer.domElement);
 
 const checkCollision = () => {
 
-//check potOfGold collision
   const potOfGoldToGnome = getgnomesCloseToObject(potOfGold);
 
   if (potOfGoldToGnome.length > 0) {
@@ -208,7 +196,6 @@ const checkCollision = () => {
     potOfGold.release();
   }
 
-//check potOfGold collision
   const torchToGnome = getgnomesCloseToObject(torch);
 
   if (torchToGnome.length > 0) {
@@ -217,7 +204,6 @@ const checkCollision = () => {
     torch.release();
   }
 
-//check potOfGold collision
   const shroomToGnome = getgnomesCloseToObject(shroom);
 
   if (shroomToGnome.length > 0) {
@@ -226,7 +212,6 @@ const checkCollision = () => {
     shroom.release();
   }
 
-//check potOfGold collision
   const logToGnome = getgnomesCloseToObject(log);
 
   if (logToGnome.length > 0) {
@@ -235,7 +220,6 @@ const checkCollision = () => {
     log.release();
   }
 
-//check potOfGold collision
   const pickaxeToGnome = getgnomesCloseToObject(pickaxe);
 
   if (pickaxeToGnome.length > 0) {
