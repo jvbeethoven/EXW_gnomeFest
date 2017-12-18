@@ -8,7 +8,10 @@ import loadingScreen from './lib/loadingScreen';
 import createError from './lib/createError';
 
 
-let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, WIDTH, HEIGHT;
+let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, skydome, WIDTH, HEIGHT;
+
+
+let random1;/*, random2, random3, random4, random5;*/
 
 const synthA = new Tone.Player({
   url: `../assets/audio/drums.wav`,
@@ -115,7 +118,7 @@ displacementMap.minFilter = THREE.LinearFilter;
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
-  alpha: true
+  alpha: false
 });
 const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
 const cylindergeometry = new THREE.CylinderGeometry(.2, .2, .2, .2);
@@ -137,6 +140,7 @@ const init = () => {
       .then(() => render())
       .then(() => loadingScreen(false))
       .then(() => addText())
+      .then(() => createRandom())
       .then(() => makeDraggable());
   }
 };
@@ -148,11 +152,18 @@ const createControls = () => {
   controls = {
     displacement: .1,
     rotation: .01,
-    frequencySynth: 2
+    frequencySynth: 2,
+    random: Math.random() * .1 + .001
   };
   gui.add(controls, `displacement`, .1, 10000, .001);
   gui.add(controls, `rotation`, 0, .1, .01);
   gui.add(controls, `frequencySynth`, 0, 20);
+  gui.add(controls, `random`, 0, .1, .001);
+};
+
+const createRandom = () => {
+  random1 = controls.random;
+  console.log(random1);
 };
 
 const createScene = () => {
@@ -164,12 +175,23 @@ const createScene = () => {
   WIDTH = window.innerWidth;
 
   scene = new THREE.Scene();
-  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 200, 500);
+  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 200, 10000);
 
   camera.position.set(- 10, 10, 100);
   camera.rotation.x = 0;
   camera.rotation.y = 0;
   camera.rotation.z = 0;
+
+  //skybox
+  const skygeometry = new THREE.SphereGeometry(1000, 60, 40);
+  const skymaterial = new THREE.MeshBasicMaterial();
+  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox.png`);
+  console.log(skymaterial);
+  skymaterial.minFilter = THREE.LinearFilter;
+  skymaterial.side = THREE.BackSide;
+  skydome = new THREE.Mesh(skygeometry, skymaterial);
+  scene.add(skydome);
+  console.log(skydome);
 
   const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(0, 1, 1).normalize();
@@ -276,16 +298,19 @@ const checkCollision = () => {
 
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
-
+    skydome.rotation.x += controls.random;
+    skydome.material.color.b -= controls.random;
   } else {
     potOfGold.release();
     Tone.Transport.stop();
+    skydome.material.color.b += .002;
   }
 
   const torchToGnome = getgnomesCloseToObject(torch);
 
   if (torchToGnome.length > 0) {
     torch.trigger();
+    skydome.rotation.y += controls.random;
   } else {
     torch.release();
   }
@@ -294,6 +319,8 @@ const checkCollision = () => {
 
   if (shroomToGnome.length > 0) {
     shroom.trigger();
+    skydome.rotation.z += .002;
+    skydome.material.color.r -= controls.random;
   } else {
     shroom.release();
   }
@@ -302,6 +329,10 @@ const checkCollision = () => {
 
   if (logToGnome.length > 0) {
     log.trigger();
+    skydome.rotation.x += .005;
+    skydome.material.color.r -= controls.random - Math.random();
+
+    skydome.rotation.y += .005;
   } else {
     log.release();
   }
