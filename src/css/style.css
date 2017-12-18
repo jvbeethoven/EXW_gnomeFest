@@ -48,6 +48,21 @@ h1 {
   font-family: vcr;
 }
 
+.button {
+  padding: 2rem 4rem;
+  color: white;
+  font-family: vcr;
+  font-weight: bold;
+  font-size: 2rem;
+  background-color: #e78376;
+  transition: background-color .8s;
+}
+
+.button:hover {
+  cursor: pointer;
+  background-color: #d9aba1;
+}
+
 .error {
   font-size: 3rem;
   width: 20rem;

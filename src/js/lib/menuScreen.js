@@ -14,8 +14,9 @@ const menuScreen = bool => {
     menuContainer.appendChild(logo);
 
     const button = document.createElement(`button`);
-    button.innerHTML = `button`;
+    button.innerHTML = `explore`;
     button.id = `button`;
+    button.value = `explore`;
     button.classList.add(`button`);
     menuContainer.appendChild(button);
   } else {

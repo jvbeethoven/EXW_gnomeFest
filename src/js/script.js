@@ -226,7 +226,7 @@ const loadAssets = () => {
         gnome = new THREE.Mesh(geometry, material);
         gnome.scale.set(0.2, 0.2, 0.2);
         gnome.position.x = - 780 + (i * 70);
-        gnome.position.y = - 350;
+        gnome.position.y = - 100;
         gnome.position.z = 0;
         gnome.rotation.x = 0;
         gnome.rotation.y = 0;
