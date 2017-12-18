@@ -10,25 +10,9 @@ import createError from './lib/createError';
 
 let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, WIDTH, HEIGHT;
 
-const synthA = new Tone.Synth({
-  portamento: .01,
-  oscillator: {
-    type: `square`
-  },
-  envelope: {
-    attack: .005,
-    decay: .2,
-    sustain: .4,
-    release: 1.4
-  },
-  filterEnvelope: {
-    attack: .005,
-    decay: .1,
-    sustain: .05,
-    release: .8,
-    baseFrequency: 300,
-    octaves: 4
-  }
+const synthA = new Tone.Player({
+  url: `../assets/audio/drums.wav`,
+  loop: true
 }).toMaster();
 
 const synthANote = `c4`;
@@ -52,8 +36,64 @@ const synthBNote = `D2`;
 
 // const synthA = new Tone.FMSynth().toMaster();
 // const synthB = new Tone.PluckSynth().toMaster();
-const synthC = new Tone.Synth().toMaster();
-const synthCNote = `c4`;
+const synthC = new Tone.DuoSynth({
+  vibratoAmount: 0.5,
+  vibratoRate: 5,
+  portamento: 0.1,
+  harmonicity: 1.005,
+  volume: 5,
+  voice0: {
+    volume: - 2,
+    oscillator: {
+      type: `sawtooth`
+    },
+    filter: {
+      Q: 1,
+      type: `lowpass`,
+      rolloff: - 24
+    },
+    envelope: {
+      attack: 0.01,
+      decay: 0.25,
+      sustain: 0.4,
+      release: 1.2
+    },
+    filterEnvelope: {
+      attack: 0.001,
+      decay: 0.05,
+      sustain: 0.3,
+      release: 2,
+      baseFrequency: 100,
+      octaves: 4
+    }
+  },
+  voice1: {
+    volume: - 10,
+    oscillator: {
+      type: `sawtooth`
+    },
+    filter: {
+      Q: 2,
+      type: `bandpass`,
+      rolloff: - 12
+    },
+    envelope: {
+      attack: 0.25,
+      decay: 4,
+      sustain: 0.1,
+      release: 0.8
+    },
+    filterEnvelope: {
+      attack: 0.05,
+      decay: 0.05,
+      sustain: 0.7,
+      release: 2,
+      baseFrequency: 5000,
+      octaves: - 1.5
+    }
+  }
+}).toMaster();
+const synthCNote = `G2`;
 const synthD = new Tone.MembraneSynth().toMaster();
 const synthDNote = `c2`;
 const synthE = new Tone.Synth().toMaster();
@@ -164,7 +204,7 @@ const loadAssets = () => {
 
   return loadWithJSONLoader(`./assets/json/potOfGold.json`)
     .then(geometry => {
-      potOfGold = new MeshWithSound(geometry, testmaterial, synthA, synthANote);
+      potOfGold = new MeshWithSound(geometry, testmaterial, synthA, synthANote, true);
       potOfGold.mesh.scale.set(0.3, 0.3, 0.3);
       potOfGold.mesh.position.x = - 600;
       potOfGold.mesh.position.y = 150;
@@ -174,7 +214,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/torch.json`))
     .then(geometry => {
-      torch = new MeshWithSound(geometry, testmaterial, synthB, synthBNote);
+      torch = new MeshWithSound(geometry, testmaterial, synthB, synthBNote, false);
       torch.mesh.scale.set(0.4, 0.4, 0.4);
       torch.mesh.position.x = - 300;
       torch.mesh.position.y = - 90;
@@ -183,7 +223,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/shroom.json`))
     .then(geometry => {
-      shroom = new MeshWithSound(geometry, testmaterial, synthC, synthCNote);
+      shroom = new MeshWithSound(geometry, testmaterial, synthC, synthCNote, false);
       shroom.mesh.scale.set(0.4, 0.4, 0.4);
       shroom.mesh.position.x = 0;
       shroom.mesh.position.y = - 200;
@@ -192,7 +232,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/log.json`))
     .then(geometry => {
-      log = new MeshWithSound(geometry, testmaterial, synthD, synthDNote);
+      log = new MeshWithSound(geometry, testmaterial, synthD, synthDNote, false);
       const s = 0.9;
       log.mesh.scale.set(s, s, s);
       log.mesh.position.x = 300;
@@ -203,7 +243,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
     .then(geometry => {
-      pickaxe = new MeshWithSound(geometry, testmaterial, synthE, synthENote);
+      pickaxe = new MeshWithSound(geometry, testmaterial, synthE, synthENote, false);
       pickaxe.mesh.scale.set(0.4, 0.4, 0.4);
       pickaxe.mesh.position.x = 500;
       pickaxe.mesh.position.y = 10;
