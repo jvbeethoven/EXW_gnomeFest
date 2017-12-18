@@ -31,7 +31,7 @@ h1 {
   color: #ff71ce;
 }
 
-.loadingContainer, .errorContainer {
+.loadingContainer, .errorContainer, .menuContainer {
   width: 100%;
   height: 100%;
   display: flex;

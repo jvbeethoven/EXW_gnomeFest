@@ -5,6 +5,7 @@ import Tone from 'tone';
 import MeshWithSound from './Models/MeshWithSound';
 import addText from './lib/addText';
 import loadingScreen from './lib/loadingScreen';
+import menuScreen from './lib/menuScreen';
 import createError from './lib/createError';
 
 
@@ -86,19 +87,27 @@ const mesh2 = new THREE.Mesh(cylindergeometry, material);
 const loader = new THREE.JSONLoader();
 const gnomes = [];
 
+
 const init = () => {
   if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 1000) {
     createError();
   } else {
-    createControls();
-    loadingScreen(true);
-    createScene();
-    loadAssets()
-      .then(() => render())
-      .then(() => loadingScreen(false))
-      .then(() => addText())
-      .then(() => makeDraggable());
+    menuScreen(true);
+    const button = document.getElementById(`button`);
+    button.addEventListener(`click`, loadGame);
   }
+};
+
+const loadGame = () => {
+  menuScreen(false);
+  createControls();
+  loadingScreen(true);
+  createScene();
+  loadAssets()
+    .then(() => render())
+    .then(() => loadingScreen(false))
+    .then(() => addText())
+    .then(() => makeDraggable());
 };
 
 const createControls = () => {
