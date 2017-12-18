@@ -18,7 +18,10 @@ const synthA = new Tone.Player({
 const synthANote = `c4`;
 
 const synthB = new Tone.MonoSynth({
-  volume: - 10,
+  volume: - 15,
+  oscillator: {
+    type: `sine4`
+  },
   envelope: {
     attack: 0.1,
     decay: 0.3,
@@ -33,9 +36,6 @@ const synthB = new Tone.MonoSynth({
   }
 }).toMaster();
 const synthBNote = `D2`;
-
-// const synthA = new Tone.FMSynth().toMaster();
-// const synthB = new Tone.PluckSynth().toMaster();
 const synthC = new Tone.DuoSynth({
   vibratoAmount: 0.5,
   vibratoRate: 5,
@@ -95,7 +95,7 @@ const synthC = new Tone.DuoSynth({
 }).toMaster();
 const synthCNote = `G2`;
 const synthD = new Tone.MembraneSynth().toMaster();
-const synthDNote = `c2`;
+const synthDNote = `D3`;
 const synthE = new Tone.Synth().toMaster();
 const synthENote = `c2`;
 
