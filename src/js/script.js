@@ -15,9 +15,7 @@ const synthA = new Tone.Player({
   url: `../assets/audio/drums.wav`,
   loop: true
 }).toMaster();
-
 const synthANote = `c4`;
-
 const synthB = new Tone.MonoSynth({
   volume: - 15,
   oscillator: {
@@ -175,7 +173,7 @@ const createScene = () => {
   WIDTH = window.innerWidth;
 
   scene = new THREE.Scene();
-  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 200, 10000);
+  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 200, 2000);
 
   camera.position.set(- 10, 10, 100);
   camera.rotation.x = 0;
@@ -185,7 +183,7 @@ const createScene = () => {
   //skybox
   const skygeometry = new THREE.SphereGeometry(1000, 60, 40);
   const skymaterial = new THREE.MeshBasicMaterial();
-  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox.png`);
+  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox_2.jpg`);
   console.log(skymaterial);
   skymaterial.minFilter = THREE.LinearFilter;
   skymaterial.side = THREE.BackSide;
@@ -364,6 +362,7 @@ const render = () => {
 const handleWindowResize = () => {
   HEIGHT = window.innerHeight;
   WIDTH = window.innerWidth;
+
   renderer.setSize(WIDTH, HEIGHT);
   camera.aspect = WIDTH / HEIGHT;
   camera.updateProjectionMatrix();
