@@ -22,10 +22,10 @@ h1 {
 .title {
   z-index: 100;
   position: absolute;
-  top: 10%;
-  left: 40%;
+  top: 7%;
+  left: 36%;
   font-family: vcr;
-  font-size: 4rem;
+  font-size: 7rem;
   letter-spacing: 1rem;
   color: #ff71ce;
   display: block;

@@ -221,7 +221,6 @@ const createControls = () => {
   };
   gui.add(controls, `displacement`, .1, 10000, .001);
   gui.add(controls, `rotation`, 0, .1, .01);
-  gui.add(controls, `frequencySynth`, 0, 20);
   gui.add(controls, `random`, 0, .1, .001);
 };
 
@@ -310,7 +309,7 @@ const loadAssets = () => {
       shroom = new MeshWithSound(geometry, shroomMaterial, synthC, synthCNote, false);
       shroom.mesh.scale.set(0.4, 0.4, 0.4);
       shroom.mesh.position.x = 0;
-      shroom.mesh.position.y = - 200;
+      shroom.mesh.position.y = - 100;
       shroom.mesh.rotation.x = 0;
       scene.add(shroom.mesh);
     })
@@ -340,8 +339,8 @@ const loadAssets = () => {
       for (let i = 0;i < 5;i ++) {
         gnome = new THREE.Mesh(geometry, material);
         gnome.scale.set(0.2, 0.2, 0.2);
-        gnome.position.x = - 780 + (i * 70);
-        gnome.position.y = - 100;
+        gnome.position.x = - 180 + (i * 70);
+        gnome.position.y = - 300;
         gnome.position.z = 0;
         gnome.rotation.x = 0;
         gnome.rotation.y = 0;
