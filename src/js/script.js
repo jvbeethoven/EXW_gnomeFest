@@ -101,7 +101,35 @@ const synthENote = `c2`;
 const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
 const colormap = THREE.ImageUtils.loadTexture(`./assets/img/textures/drug_texture.jpg`);
 
-const testmaterial = new THREE.MeshPhongMaterial({
+const potOfGoldMaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+});
+
+const torchMaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+});
+
+const shroomMaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+});
+
+const logMaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+});
+
+const pickaxeMaterial = new THREE.MeshPhongMaterial({
   map: colormap,
   displacementMap: displacementMap,
   displacementScale: 0,
@@ -182,9 +210,13 @@ const createScene = () => {
 
   //skybox
   const skygeometry = new THREE.SphereGeometry(1000, 60, 40);
-  const skymaterial = new THREE.MeshBasicMaterial();
-  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox_2.jpg`);
-  console.log(skymaterial);
+  const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
+  const skymaterial = new THREE.MeshPhongMaterial({
+    displacementMap: displacementMap,
+    displacementScale: 0,
+    displacementBias: 0,
+  });
+  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox_2.jpeg`);
   skymaterial.minFilter = THREE.LinearFilter;
   skymaterial.side = THREE.BackSide;
   skydome = new THREE.Mesh(skygeometry, skymaterial);
@@ -224,7 +256,7 @@ const loadAssets = () => {
 
   return loadWithJSONLoader(`./assets/json/potOfGold.json`)
     .then(geometry => {
-      potOfGold = new MeshWithSound(geometry, testmaterial, synthA, synthANote, true);
+      potOfGold = new MeshWithSound(geometry, potOfGoldMaterial, synthA, synthANote, true);
       potOfGold.mesh.scale.set(0.3, 0.3, 0.3);
       potOfGold.mesh.position.x = - 600;
       potOfGold.mesh.position.y = 150;
@@ -234,7 +266,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/torch.json`))
     .then(geometry => {
-      torch = new MeshWithSound(geometry, testmaterial, synthB, synthBNote, false);
+      torch = new MeshWithSound(geometry, torchMaterial, synthB, synthBNote, false);
       torch.mesh.scale.set(0.4, 0.4, 0.4);
       torch.mesh.position.x = - 300;
       torch.mesh.position.y = - 90;
@@ -243,7 +275,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/shroom.json`))
     .then(geometry => {
-      shroom = new MeshWithSound(geometry, testmaterial, synthC, synthCNote, false);
+      shroom = new MeshWithSound(geometry, shroomMaterial, synthC, synthCNote, false);
       shroom.mesh.scale.set(0.4, 0.4, 0.4);
       shroom.mesh.position.x = 0;
       shroom.mesh.position.y = - 200;
@@ -252,7 +284,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/log.json`))
     .then(geometry => {
-      log = new MeshWithSound(geometry, testmaterial, synthD, synthDNote, false);
+      log = new MeshWithSound(geometry, logMaterial, synthD, synthDNote, false);
       const s = 0.9;
       log.mesh.scale.set(s, s, s);
       log.mesh.position.x = 300;
@@ -263,7 +295,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
     .then(geometry => {
-      pickaxe = new MeshWithSound(geometry, testmaterial, synthE, synthENote, false);
+      pickaxe = new MeshWithSound(geometry, pickaxeMaterial, synthE, synthENote, false);
       pickaxe.mesh.scale.set(0.4, 0.4, 0.4);
       pickaxe.mesh.position.x = 500;
       pickaxe.mesh.position.y = 10;
@@ -288,6 +320,20 @@ const loadAssets = () => {
     });
 };
 
+const randomObject = (object, bool) => {
+  console.log(bool);
+  if (bool) {
+    console.log(object);
+    object.mesh.material.displacementScale += .1;
+  } else {
+    object.mesh.material.displacementScale = 0;
+    // object.mesh.material.displacementScale -= .1;
+    // if (object.mesh.material.displacementScale === 0) {
+    //   object.mesh.material.displacementScale = 0;
+    //}
+  }
+};
+
 const makeDraggable = () => new DragControls(gnomes, camera, renderer.domElement);
 
 const checkCollision = () => {
@@ -296,20 +342,27 @@ const checkCollision = () => {
 
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
+    randomObject(potOfGold, true);
     skydome.rotation.x += controls.random;
     skydome.material.color.b -= controls.random;
+    skydome.material.displacementScale += .1;
+    skydome.material.displacementBias += 1;
   } else {
+    randomObject(potOfGold, false);
     potOfGold.release();
     Tone.Transport.stop();
     skydome.material.color.b += .002;
+    skydome.material.displacementScale -= .01;
   }
 
   const torchToGnome = getgnomesCloseToObject(torch);
 
   if (torchToGnome.length > 0) {
     torch.trigger();
+    randomObject(torch, true);
     skydome.rotation.y += controls.random;
   } else {
+    randomObject(torch, false);
     torch.release();
   }
 
@@ -317,9 +370,11 @@ const checkCollision = () => {
 
   if (shroomToGnome.length > 0) {
     shroom.trigger();
+    randomObject(shroom, true);
     skydome.rotation.z += .002;
     skydome.material.color.r -= controls.random;
   } else {
+    randomObject(shroom, false);
     shroom.release();
   }
 
@@ -327,19 +382,22 @@ const checkCollision = () => {
 
   if (logToGnome.length > 0) {
     log.trigger();
+    randomObject(log, true);
     skydome.rotation.x += .005;
     skydome.material.color.r -= controls.random - Math.random();
-
     skydome.rotation.y += .005;
   } else {
     log.release();
+    randomObject(log, false);
   }
 
   const pickaxeToGnome = getgnomesCloseToObject(pickaxe);
 
   if (pickaxeToGnome.length > 0) {
     pickaxe.trigger();
+    randomObject(pickaxe, true);
   } else {
+    randomObject(pickaxe, false);
     pickaxe.release();
   }
 
