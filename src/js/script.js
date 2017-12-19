@@ -98,8 +98,15 @@ const synthDNote = `D3`;
 const synthE = new Tone.Synth().toMaster();
 const synthENote = `c2`;
 
-const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
+const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/displacement.jpeg`);
+const displacementMap2 = THREE.ImageUtils.loadTexture(`./assets/img/displacement2.png`);
+const displacementMap3 = THREE.ImageUtils.loadTexture(`./assets/img/displacement3.jpeg`);
+const displacementMap4 = THREE.ImageUtils.loadTexture(`./assets/img/displacement4.png`);
+const displacementMap5 = THREE.ImageUtils.loadTexture(`./assets/img/displacement5.jpeg`);
+
 const colormap = THREE.ImageUtils.loadTexture(`./assets/img/textures/drug_texture.jpg`);
+const notfound = THREE.ImageUtils.loadTexture(`./assets/img/notfound.png`);
+const seaTexture = THREE.ImageUtils.loadTexture(`./assets/img/seatexture.jpeg`);
 
 const potOfGoldMaterial = new THREE.MeshPhongMaterial({
   map: colormap,
@@ -109,29 +116,29 @@ const potOfGoldMaterial = new THREE.MeshPhongMaterial({
 });
 
 const torchMaterial = new THREE.MeshPhongMaterial({
-  map: colormap,
-  displacementMap: displacementMap,
+  map: notfound,
+  displacementMap: displacementMap2,
   displacementScale: 0,
   displacementBias: 0,
 });
 
 const shroomMaterial = new THREE.MeshPhongMaterial({
   map: colormap,
-  displacementMap: displacementMap,
+  displacementMap: displacementMap3,
   displacementScale: 0,
   displacementBias: 0,
 });
 
 const logMaterial = new THREE.MeshPhongMaterial({
-  map: colormap,
-  displacementMap: displacementMap,
+  map: seaTexture,
+  displacementMap: displacementMap4,
   displacementScale: 0,
   displacementBias: 0,
 });
 
 const pickaxeMaterial = new THREE.MeshPhongMaterial({
   map: colormap,
-  displacementMap: displacementMap,
+  displacementMap: displacementMap5,
   displacementScale: 0,
   displacementBias: 0,
 });
@@ -210,13 +217,13 @@ const createScene = () => {
 
   //skybox
   const skygeometry = new THREE.SphereGeometry(1000, 60, 40);
-  const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
+  const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/displacement3.jpeg`);
   const skymaterial = new THREE.MeshPhongMaterial({
     displacementMap: displacementMap,
     displacementScale: 0,
     displacementBias: 0,
   });
-  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox_2.jpeg`);
+  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox_3.jpg`);
   skymaterial.minFilter = THREE.LinearFilter;
   skymaterial.side = THREE.BackSide;
   skydome = new THREE.Mesh(skygeometry, skymaterial);
@@ -282,15 +289,15 @@ const loadAssets = () => {
       shroom.mesh.rotation.x = 0;
       scene.add(shroom.mesh);
     })
-    .then(() => loadWithJSONLoader(`./assets/json/log.json`))
+    .then(() => loadWithJSONLoader(`./assets/json/devine.json`))
     .then(geometry => {
       log = new MeshWithSound(geometry, logMaterial, synthD, synthDNote, false);
-      const s = 0.9;
+      const s = 0.5;
       log.mesh.scale.set(s, s, s);
       log.mesh.position.x = 300;
-      log.mesh.position.y = - 200;
-      log.mesh.rotation.x = - 10;
-      log.mesh.rotation.y = 2;
+      log.mesh.position.y = - 100;
+      log.mesh.rotation.x = - .5;
+      log.mesh.rotation.y = .1;
       scene.add(log.mesh);
     })
     .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
@@ -335,6 +342,7 @@ const randomObject = (object, bool) => {
   }
 };
 
+
 const makeDraggable = () => new DragControls(gnomes, camera, renderer.domElement);
 
 const checkCollision = () => {
@@ -343,13 +351,12 @@ const checkCollision = () => {
 
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
+    skydome.material.color.g += controls.random - Math.random();
+    skydome.rotation.y += .005;
     randomObject(potOfGold, true);
-    skydome.rotation.x += controls.random;
-    skydome.material.color.b -= controls.random;
-    skydome.material.displacementScale += .1;
-    skydome.material.displacementBias += 1;
   } else {
-    randomObject(potOfGold, false);
+    skydome.material.color.g -= controls.random - Math.random();
+    skydome.rotation.z += .005;
     potOfGold.release();
     Tone.Transport.stop();
     skydome.material.color.b += .002;
@@ -359,6 +366,8 @@ const checkCollision = () => {
   const torchToGnome = getgnomesCloseToObject(torch);
 
   if (torchToGnome.length > 0) {
+    skydome.material.color.b -= .002;
+    skydome.rotation.x += .005;
     torch.trigger();
     randomObject(torch, true);
     skydome.rotation.y += controls.random;
@@ -373,7 +382,7 @@ const checkCollision = () => {
     shroom.trigger();
     randomObject(shroom, true);
     skydome.rotation.z += .002;
-    skydome.material.color.r -= controls.random;
+    skydome.material.color.r -= .001;
   } else {
     randomObject(shroom, false);
     shroom.release();
@@ -385,7 +394,7 @@ const checkCollision = () => {
     log.trigger();
     randomObject(log, true);
     skydome.rotation.x += .005;
-    skydome.material.color.r -= controls.random - Math.random();
+    skydome.material.color.r -= .002;
     skydome.rotation.y += .005;
   } else {
     log.release();
