@@ -8,7 +8,6 @@ html {
 }
 
 body {
-  cursor: url(/assets/img/cursor.png), default;
   font-family: Roboto;
   font-size: 1.6rem;
   width: 100%;
@@ -22,11 +21,24 @@ h1 {
 .title {
   z-index: 100;
   position: absolute;
-  top: 10%;
+  top: 7%;
+  left: 36%;
+  font-family: vcr;
+  font-size: 7rem;
+  letter-spacing: 1rem;
+  color: #ff71ce;
+  display: block;
+}
+
+.currentlyDancing {
+  z-index: 100;
+  position: absolute;
+  max-width: 40rem;
+  top: 15%;
   left: 40%;
   font-family: vcr;
-  font-size: 4rem;
-  letter-spacing: 1rem;
+  font-size: 1.6rem;
+  text-align: center;
   color: #ff71ce;
   display: block;
 }
@@ -116,6 +128,7 @@ h1 {
 .error {
   font-size: 3rem;
   width: 20rem;
+  color: white;
 }
 
 .exp {

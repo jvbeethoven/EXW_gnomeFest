@@ -11,7 +11,7 @@ const menuScreen = bool => {
     menuContainer.appendChild(menuTitle);
 
     const menuImg = document.createElement(`img`);
-    menuImg.src = `/assets/img/startscreenimg.png`;
+    menuImg.src = `assets/img/startscreenimg.png`;
     menuImg.classList.add(`menuImg`);
     menuContainer.appendChild(menuImg);
 
