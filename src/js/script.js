@@ -93,10 +93,31 @@ const synthC = new Tone.DuoSynth({
   }
 }).toMaster();
 const synthCNote = `G2`;
-const synthD = new Tone.MembraneSynth().toMaster();
+const synthD = new Tone.AMSynth({
+  harmonicity: 3,
+  detune: 0,
+  oscillator: {
+    type: `triangle`
+  },
+  envelope: {
+    attack: 0.01,
+    decay: 0.01,
+    sustain: 1,
+    release: 2
+  },
+  modulation: {
+    type: `square`
+  },
+  modulationEnvelope: {
+    attack: 0.5,
+    decay: 0,
+    sustain: 1,
+    release: 0.5
+  }
+}).toMaster();
 const synthDNote = `D3`;
 const synthE = new Tone.Synth().toMaster();
-const synthENote = `c2`;
+const synthENote = `G3`;
 
 const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/displacement.jpeg`);
 const displacementMap2 = THREE.ImageUtils.loadTexture(`./assets/img/displacement2.png`);
@@ -156,7 +177,6 @@ const cylindergeometry = new THREE.CylinderGeometry(.2, .2, .2, .2);
 const material = new THREE.MeshNormalMaterial();
 const mesh = new THREE.Mesh(geometry, material);
 const mesh2 = new THREE.Mesh(cylindergeometry, material);
-
 const loader = new THREE.JSONLoader();
 const gnomes = [];
 
@@ -228,7 +248,6 @@ const createScene = () => {
   skymaterial.side = THREE.BackSide;
   skydome = new THREE.Mesh(skygeometry, skymaterial);
   scene.add(skydome);
-  console.log(skydome);
 
   const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(0, 1, 1).normalize();
@@ -335,10 +354,6 @@ const randomObject = (object, bool) => {
     object.mesh.rotation.y += .005;
   } else {
     object.mesh.material.displacementScale = 0;
-    // object.mesh.material.displacementScale -= .1;
-    // if (object.mesh.material.displacementScale === 0) {
-    //   object.mesh.material.displacementScale = 0;
-    //}
   }
 };
 
