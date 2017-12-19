@@ -220,15 +220,9 @@ const createControls = () => {
     b: 1,
     random: Math.random() * .1 + .001
   };
-<<<<<<< HEAD
   gui.add(controls, `r`, 0, 1, .001);
   gui.add(controls, `g`, 0, 1, .001);
   gui.add(controls, `b`, 0, 1, .001);
-=======
-  gui.add(controls, `displacement`, .1, 10000, .001);
-  gui.add(controls, `rotation`, 0, .1, .01);
-  gui.add(controls, `random`, 0, .1, .001);
->>>>>>> 84b8c8557c2d8309f1f69abfe915018708e531c2
 };
 
 const createScene = () => {
