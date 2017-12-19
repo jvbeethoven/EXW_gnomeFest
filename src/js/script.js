@@ -7,12 +7,13 @@ import addText from './lib/addText';
 import loadingScreen from './lib/loadingScreen';
 import menuScreen from './lib/menuScreen';
 import createError from './lib/createError';
-import currentlyDancing from './lib/currentlyDancing';
+import showNames from './lib/showNames';
 
-
-let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, skydome, WIDTH, HEIGHT;
+let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera,
+  skydome, WIDTH, HEIGHT, potgoldGnome, torchGnome, shroomGnome, logGnome, pickaxeGnome;
 
 const gnomeNames = [`David`, `Kawouter`, `Plop`, `Wesley`, `Gnomio`];
+const currentGnomes = [];
 
 const synthA = new Tone.Player({
   url: `assets/audio/drums.wav`,
@@ -139,28 +140,24 @@ const potOfGoldMaterial = new THREE.MeshPhongMaterial({
   displacementScale: 0,
   displacementBias: 0,
 });
-
 const torchMaterial = new THREE.MeshPhongMaterial({
   map: texture1,
   displacementMap: displacementMap2,
   displacementScale: 0,
   displacementBias: 0,
 });
-
 const shroomMaterial = new THREE.MeshPhongMaterial({
   map: texture2,
   displacementMap: displacementMap3,
   displacementScale: 0,
   displacementBias: 0,
 });
-
 const logMaterial = new THREE.MeshPhongMaterial({
   map: seaTexture,
   displacementMap: displacementMap4,
   displacementScale: 0,
   displacementBias: 0,
 });
-
 const pickaxeMaterial = new THREE.MeshPhongMaterial({
   map: colormap,
   displacementMap: displacementMap5,
@@ -174,8 +171,6 @@ displacementMap2.minFilter = THREE.LinearFilter;
 displacementMap3.minFilter = THREE.LinearFilter;
 displacementMap4.minFilter = THREE.LinearFilter;
 displacementMap5.minFilter = THREE.LinearFilter;
-
-
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
@@ -368,7 +363,6 @@ const randomObject = (object, bool) => {
   }
 };
 
-
 const makeDraggable = () => new DragControls(gnomes, camera, renderer.domElement);
 
 const checkCollision = () => {
@@ -376,16 +370,14 @@ const checkCollision = () => {
   const potOfGoldToGnome = getgnomesCloseToObject(potOfGold);
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
-    const potgoldGnome = potOfGoldToGnome[0].name;
+    potgoldGnome = potOfGoldToGnome[0].name;
     currentlyDancing(potgoldGnome, true);
     skydome.rotation.y += .005;
     randomObject(potOfGold, true);
-  } else {
-
+  } else if (potOfGoldToGnome.length === 0) {
     randomObject(potOfGold, false);
-    skydome.rotation.z += .005;
-    const potgoldGnome = potOfGoldToGnome[0].name;
     currentlyDancing(potgoldGnome, false);
+    skydome.rotation.z += .005;
     potOfGold.release();
     Tone.Transport.stop();
     skydome.material.displacementScale -= .01;
@@ -397,26 +389,23 @@ const checkCollision = () => {
     skydome.rotation.x += .005;
     torch.trigger();
     randomObject(torch, true);
-    const torchGnome = torchToGnome[0].name;
+    torchGnome = torchToGnome[0].name;
     currentlyDancing(torchGnome, true);
     skydome.rotation.y += .02;
-  } else {
-    const torchGnome = torchToGnome[0].name;
+  } else if (torchToGnome.length === 0) {
     currentlyDancing(torchGnome, false);
     randomObject(torch, false);
     torch.release();
   }
 
   const shroomToGnome = getgnomesCloseToObject(shroom);
-
   if (shroomToGnome.length > 0) {
     shroom.trigger();
     randomObject(shroom, true);
-    const shroomGnome = shroomToGnome[0].name;
+    shroomGnome = shroomToGnome[0].name;
     currentlyDancing(shroomGnome, true);
     skydome.rotation.z += .002;
-  } else {
-    const shroomGnome = shroomToGnome[0].name;
+  } else if (shroomToGnome.length === 0) {
     currentlyDancing(shroomGnome, false);
     randomObject(shroom, false);
     shroom.release();
@@ -426,12 +415,11 @@ const checkCollision = () => {
   if (logToGnome.length > 0) {
     log.trigger();
     randomObject(log, true);
-    const logGnome = logToGnome[0].name;
+    logGnome = logToGnome[0].name;
     currentlyDancing(logGnome, true);
     skydome.rotation.x += .005;
     skydome.rotation.y += .005;
-  } else {
-    const logGnome = logToGnome[0].name;
+  } else if (logToGnome.length === 0) {
     currentlyDancing(logGnome, false);
     log.release();
     randomObject(log, false);
@@ -440,15 +428,30 @@ const checkCollision = () => {
   const pickaxeToGnome = getgnomesCloseToObject(pickaxe);
   if (pickaxeToGnome.length > 0) {
     pickaxe.trigger();
-    const pickaxeGnome = pickaxeToGnome[0].name;
+    pickaxeGnome = pickaxeToGnome[0].name;
     currentlyDancing(pickaxeGnome, true);
     skydome.rotation.z += .009;
     randomObject(pickaxe, true);
-  } else {
-    const pickaxeGnome = pickaxeToGnome[0].name;
+  } else if (pickaxeToGnome.length === 0) {
     currentlyDancing(pickaxeGnome, false);
     randomObject(pickaxe, false);
     pickaxe.release();
+  }
+
+};
+
+const currentlyDancing = (object, bool) => {
+  if (bool) {
+    if (!currentGnomes.includes(object)) {
+      currentGnomes.push(object);
+      showNames(currentGnomes);
+    }
+  } else if (!bool) {
+    const index = currentGnomes.indexOf(object);
+    if (index > - 1) {
+      currentGnomes.splice(index, 1);
+      showNames(currentGnomes);
+    }
   }
 
 };

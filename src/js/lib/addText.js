@@ -5,6 +5,12 @@ const addText = () => {
   title.classList.add(`unselectable`);
   document.body.appendChild(title);
 
+  const currentlyDancing = document.createElement(`p`);
+  currentlyDancing.innerHTML = `Currently dancing:`;
+  currentlyDancing.classList.add(`currentlyDancing`);
+  currentlyDancing.classList.add(`unselectable`);
+  document.body.appendChild(currentlyDancing);
+
 };
 
 export default addText;
