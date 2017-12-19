@@ -45,61 +45,51 @@ export default class ProduceMusic {
 
   playMusic = target => {
 
-    switch (target) {
-    case 1:
+    if (target === 1) {
       this.playDrums();
-
-      break;
-    case 2:
-      // this.playDrums(distortion, tremolo, polySynth);
-
-      break;
-    case 3:
-      // this.playDrums(distortion, tremolo, polySynth);
-
-      break;
-    case 4:
-      // this.playDrums(distortion, tremolo, polySynth);
-
-      break;
-    case 5:
-      // this.playDrums(distortion, tremolo, polySynth);
-      this.playFifth();
-
-      break;
-    default:
-      console.log(`default`);
     }
+
+    if (target === 2) {
+      console.log(`2 hit`);
+    }
+
+    if (target === 3) {
+      console.log(`3 hit`);
+    }
+
+    if (target === 4) {
+      console.log(`4 hit`);
+    }
+
+    if (target === 5) {
+      this.playFifth();
+    }
+
   };
 
   stopMusic = target => {
 
-    switch (target) {
-    case 1:
+    if (target === 1) {
       this.stopDrums();
+    }
 
-      break;
-    case 2:
-      // this.stopDrums(distortion, tremolo, polySynth);
+    if (target === 2) {
+      console.log(`2 hit`);
+    }
 
-      break;
-    case 3:
-      // this.stopDrums(distortion, tremolo, polySynth);
+    if (target === 3) {
+      console.log(`3 hit`);
+    }
 
-      break;
-    case 4:
-      // this.stopDrums(distortion, tremolo, polySynth);
+    if (target === 4) {
+      console.log(`4 hit`);
+    }
 
-      break;
-    case 5:
-      // this.stopDrums(distortion, tremolo, polySynth);
+    if (target === 5) {
       this.stopFifth();
-
-      break;
-    default:
-      console.log(`default`);
     }
   };
+
 
   playDrums = () => {
     // polySynth.triggerAttack([`C4`, `E4`, `G4`, `B4`]);
