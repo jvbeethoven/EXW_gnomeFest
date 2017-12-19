@@ -7,9 +7,12 @@ import addText from './lib/addText';
 import loadingScreen from './lib/loadingScreen';
 import menuScreen from './lib/menuScreen';
 import createError from './lib/createError';
+import currentlyDancing from './lib/currentlyDancing';
 
 
 let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, skydome, WIDTH, HEIGHT;
+
+const gnomeNames = [`David`, `Kawouter`, `Plop`, `Wesley`, `Gnomio`];
 
 const synthA = new Tone.Player({
   url: `assets/audio/drums.wav`,
@@ -339,6 +342,7 @@ const loadAssets = () => {
     .then(geometry => {
       for (let i = 0;i < 5;i ++) {
         gnome = new THREE.Mesh(geometry, material);
+        gnome.name = gnomeNames[i];
         gnome.scale.set(0.2, 0.2, 0.2);
         gnome.position.x = - 780 + (i * 70);
         gnome.position.y = - 100;
@@ -348,6 +352,7 @@ const loadAssets = () => {
         gnome.rotation.z = 0;
         scene.add(gnome);
         gnomes.push(gnome);
+        console.log(gnomes);
       }
     });
 };
@@ -371,11 +376,16 @@ const checkCollision = () => {
   const potOfGoldToGnome = getgnomesCloseToObject(potOfGold);
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
+    const potgoldGnome = potOfGoldToGnome[0].name;
+    currentlyDancing(potgoldGnome, true);
     skydome.rotation.y += .005;
     randomObject(potOfGold, true);
   } else {
+
     randomObject(potOfGold, false);
     skydome.rotation.z += .005;
+    const potgoldGnome = potOfGoldToGnome[0].name;
+    currentlyDancing(potgoldGnome, false);
     potOfGold.release();
     Tone.Transport.stop();
     skydome.material.displacementScale -= .01;
@@ -387,18 +397,27 @@ const checkCollision = () => {
     skydome.rotation.x += .005;
     torch.trigger();
     randomObject(torch, true);
+    const torchGnome = torchToGnome[0].name;
+    currentlyDancing(torchGnome, true);
     skydome.rotation.y += .02;
   } else {
+    const torchGnome = torchToGnome[0].name;
+    currentlyDancing(torchGnome, false);
     randomObject(torch, false);
     torch.release();
   }
 
   const shroomToGnome = getgnomesCloseToObject(shroom);
+
   if (shroomToGnome.length > 0) {
     shroom.trigger();
     randomObject(shroom, true);
+    const shroomGnome = shroomToGnome[0].name;
+    currentlyDancing(shroomGnome, true);
     skydome.rotation.z += .002;
   } else {
+    const shroomGnome = shroomToGnome[0].name;
+    currentlyDancing(shroomGnome, false);
     randomObject(shroom, false);
     shroom.release();
   }
@@ -407,9 +426,13 @@ const checkCollision = () => {
   if (logToGnome.length > 0) {
     log.trigger();
     randomObject(log, true);
+    const logGnome = logToGnome[0].name;
+    currentlyDancing(logGnome, true);
     skydome.rotation.x += .005;
     skydome.rotation.y += .005;
   } else {
+    const logGnome = logToGnome[0].name;
+    currentlyDancing(logGnome, false);
     log.release();
     randomObject(log, false);
   }
@@ -417,9 +440,13 @@ const checkCollision = () => {
   const pickaxeToGnome = getgnomesCloseToObject(pickaxe);
   if (pickaxeToGnome.length > 0) {
     pickaxe.trigger();
+    const pickaxeGnome = pickaxeToGnome[0].name;
+    currentlyDancing(pickaxeGnome, true);
     skydome.rotation.z += .009;
     randomObject(pickaxe, true);
   } else {
+    const pickaxeGnome = pickaxeToGnome[0].name;
+    currentlyDancing(pickaxeGnome, false);
     randomObject(pickaxe, false);
     pickaxe.release();
   }
