@@ -9,6 +9,8 @@ or
 ```
 yarn install
 ```
+
+## Running the project
 ```
 npm development
 ```
