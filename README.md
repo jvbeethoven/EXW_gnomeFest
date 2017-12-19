@@ -2,13 +2,19 @@
 Gnome Fest allows you to have fun by playing with random objects and gnomes to generate music.
 
 ## Getting Started
+```
+__npm install__ or __yarn install__ 
+```
 
-npm or yarn install 
+```
 __npm development__ or  __yarn development__
+```
 
 ## Deployment
 
+```
 __npm production__ or  __yarn production__
+```
 
 ## Built With
 
@@ -28,6 +34,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Project for Devine's Experimental Web course, taught by https://github.com/wouterverweirder
+* Project for Devine's Experimental Web course, taught by **Wouter Verweirder** https://github.com/wouterverweirder
 * Initial idea: Web socket multiplayer music 'game' 
 * Inspired by Vaporwave design and 3D artists at Us By Night festival in Belgium. (https://www.usbynight.be/thanks/)
