@@ -3,17 +3,29 @@ Gnome Fest allows you to have fun by playing with random objects and gnomes to g
 
 ## Getting Started
 ```
-__npm install__ or __yarn install__ 
+npm install
+```
+or 
+```
+yarn install
+```
+```
+npm development
+```
+or  
+```
+yarn development
 ```
 
-```
-__npm development__ or  __yarn development__
-```
 
 ## Deployment
 
 ```
-__npm production__ or  __yarn production__
+npm production
+```
+or
+```
+yarn production
 ```
 
 ## Built With
