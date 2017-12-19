@@ -321,10 +321,11 @@ const loadAssets = () => {
 };
 
 const randomObject = (object, bool) => {
-  console.log(bool);
   if (bool) {
     console.log(object);
     object.mesh.material.displacementScale += .1;
+    object.mesh.rotation.x += .1;
+    object.mesh.rotation.y += .005;
   } else {
     object.mesh.material.displacementScale = 0;
     // object.mesh.material.displacementScale -= .1;
