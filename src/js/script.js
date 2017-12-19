@@ -176,7 +176,7 @@ displacementMap5.minFilter = THREE.LinearFilter;
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
-  alpha: false
+  alpha: true
 });
 const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
 const cylindergeometry = new THREE.CylinderGeometry(.2, .2, .2, .2);
@@ -217,12 +217,14 @@ const createControls = () => {
     displacement: .1,
     rotation: .01,
     frequencySynth: 2,
+    r: 1,
+    g: 1,
+    b: 1,
     random: Math.random() * .1 + .001
   };
-  gui.add(controls, `displacement`, .1, 10000, .001);
-  gui.add(controls, `rotation`, 0, .1, .01);
-  gui.add(controls, `frequencySynth`, 0, 20);
-  gui.add(controls, `random`, 0, .1, .001);
+  gui.add(controls, `r`, 0, 1, .001);
+  gui.add(controls, `g`, 0, 1, .001);
+  gui.add(controls, `b`, 0, 1, .001);
 };
 
 const createScene = () => {
@@ -249,7 +251,7 @@ const createScene = () => {
     displacementScale: 0,
     displacementBias: 0,
   });
-  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox.png`);
+  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox_3.jpg`);
   skymaterial.minFilter = THREE.LinearFilter;
   skymaterial.side = THREE.BackSide;
   skydome = new THREE.Mesh(skygeometry, skymaterial);
@@ -372,6 +374,8 @@ const checkCollision = () => {
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
     skydome.rotation.y += .005;
+    skydome.material.displacementScale += .001;
+    skydome.material.displacementBias += 1;
     randomObject(potOfGold, true);
   } else {
     randomObject(potOfGold, false);
@@ -384,6 +388,8 @@ const checkCollision = () => {
   const torchToGnome = getgnomesCloseToObject(torch);
   if (torchToGnome.length > 0) {
     skydome.material.color.b -= .002;
+    skydome.material.displacementScale += .001;
+    skydome.material.displacementBias += .5;
     skydome.rotation.x += .005;
     torch.trigger();
     randomObject(torch, true);
@@ -396,6 +402,9 @@ const checkCollision = () => {
   const shroomToGnome = getgnomesCloseToObject(shroom);
   if (shroomToGnome.length > 0) {
     shroom.trigger();
+    skydome.material.displacementScale += .001;
+    skydome.material.displacementBias -= .5;
+    skydome.material.color.b += .001;
     randomObject(shroom, true);
     skydome.rotation.z += .002;
   } else {
@@ -406,6 +415,8 @@ const checkCollision = () => {
   const logToGnome = getgnomesCloseToObject(log);
   if (logToGnome.length > 0) {
     log.trigger();
+    skydome.material.displacementScale += .001;
+    skydome.material.color.g += .001;
     randomObject(log, true);
     skydome.rotation.x += .005;
     skydome.rotation.y += .005;
@@ -416,6 +427,8 @@ const checkCollision = () => {
 
   const pickaxeToGnome = getgnomesCloseToObject(pickaxe);
   if (pickaxeToGnome.length > 0) {
+    skydome.material.displacementScale += .001;
+    skydome.material.color.r += .001;
     pickaxe.trigger();
     skydome.rotation.z += .009;
     randomObject(pickaxe, true);
@@ -434,10 +447,14 @@ const getgnomesCloseToObject = object => {
   });
 };
 
+
 const render = () => {
   renderer.render(scene, camera);
   checkCollision();
   requestAnimationFrame(render);
+  skydome.material.color.r = controls.r;
+  skydome.material.color.g = controls.g;
+  skydome.material.color.b = controls.b;
 };
 
 const handleWindowResize = () => {
