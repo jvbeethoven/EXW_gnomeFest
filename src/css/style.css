@@ -31,6 +31,19 @@ h1 {
   display: block;
 }
 
+.currentlyDancing {
+  z-index: 100;
+  position: absolute;
+  max-width: 40rem;
+  top: 15%;
+  left: 40%;
+  font-family: vcr;
+  font-size: 1.6rem;
+  text-align: center;
+  color: #ff71ce;
+  display: block;
+}
+
 .menuTitle {
   font-family: vcr;
   letter-spacing: 4rem;
