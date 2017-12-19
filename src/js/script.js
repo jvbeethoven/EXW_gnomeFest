@@ -12,7 +12,7 @@ import createError from './lib/createError';
 let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, skydome, WIDTH, HEIGHT;
 
 const synthA = new Tone.Player({
-  url: `../assets/audio/drums.wav`,
+  url: `assets/audio/drums.wav`,
   loop: true
 }).toMaster();
 const synthANote = `c4`;
@@ -374,6 +374,7 @@ const checkCollision = () => {
     skydome.rotation.y += .005;
     randomObject(potOfGold, true);
   } else {
+    randomObject(potOfGold, false);
     skydome.rotation.z += .005;
     potOfGold.release();
     Tone.Transport.stop();
