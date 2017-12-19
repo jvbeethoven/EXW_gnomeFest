@@ -126,8 +126,9 @@ const displacementMap4 = THREE.ImageUtils.loadTexture(`./assets/img/displacement
 const displacementMap5 = THREE.ImageUtils.loadTexture(`./assets/img/displacement5.jpeg`);
 
 const colormap = THREE.ImageUtils.loadTexture(`./assets/img/textures/drug_texture.jpg`);
-const notfound = THREE.ImageUtils.loadTexture(`./assets/img/notfound.png`);
 const seaTexture = THREE.ImageUtils.loadTexture(`./assets/img/seatexture.jpeg`);
+const texture1 = THREE.ImageUtils.loadTexture(`./assets/img/texture1.jpeg`);
+const texture2 = THREE.ImageUtils.loadTexture(`./assets/img/texture2.png`);
 
 const potOfGoldMaterial = new THREE.MeshPhongMaterial({
   map: colormap,
@@ -137,14 +138,14 @@ const potOfGoldMaterial = new THREE.MeshPhongMaterial({
 });
 
 const torchMaterial = new THREE.MeshPhongMaterial({
-  map: notfound,
+  map: texture1,
   displacementMap: displacementMap2,
   displacementScale: 0,
   displacementBias: 0,
 });
 
 const shroomMaterial = new THREE.MeshPhongMaterial({
-  map: colormap,
+  map: texture2,
   displacementMap: displacementMap3,
   displacementScale: 0,
   displacementBias: 0,
@@ -166,6 +167,11 @@ const pickaxeMaterial = new THREE.MeshPhongMaterial({
 
 colormap.minFilter = THREE.LinearFilter;
 displacementMap.minFilter = THREE.LinearFilter;
+displacementMap2.minFilter = THREE.LinearFilter;
+displacementMap3.minFilter = THREE.LinearFilter;
+displacementMap4.minFilter = THREE.LinearFilter;
+displacementMap5.minFilter = THREE.LinearFilter;
+
 
 
 const renderer = new THREE.WebGLRenderer({
@@ -228,7 +234,7 @@ const createScene = () => {
   WIDTH = window.innerWidth;
 
   scene = new THREE.Scene();
-  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 200, 2000);
+  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 500, 2000);
 
   camera.position.set(- 10, 10, 100);
   camera.rotation.x = 0;
@@ -243,7 +249,7 @@ const createScene = () => {
     displacementScale: 0,
     displacementBias: 0,
   });
-  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox_3.jpg`);
+  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox.png`);
   skymaterial.minFilter = THREE.LinearFilter;
   skymaterial.side = THREE.BackSide;
   skydome = new THREE.Mesh(skygeometry, skymaterial);
@@ -348,10 +354,10 @@ const loadAssets = () => {
 
 const randomObject = (object, bool) => {
   if (bool) {
-    console.log(object);
     object.mesh.material.displacementScale += .1;
-    object.mesh.rotation.x += .1;
+    object.mesh.rotation.x += .01;
     object.mesh.rotation.y += .005;
+    object.mesh.rotation.z += .03;
   } else {
     object.mesh.material.displacementScale = 0;
   }
@@ -363,53 +369,44 @@ const makeDraggable = () => new DragControls(gnomes, camera, renderer.domElement
 const checkCollision = () => {
 
   const potOfGoldToGnome = getgnomesCloseToObject(potOfGold);
-
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
-    skydome.material.color.g += controls.random - Math.random();
     skydome.rotation.y += .005;
     randomObject(potOfGold, true);
   } else {
-    skydome.material.color.g -= controls.random - Math.random();
     skydome.rotation.z += .005;
     potOfGold.release();
     Tone.Transport.stop();
-    skydome.material.color.b += .002;
     skydome.material.displacementScale -= .01;
   }
 
   const torchToGnome = getgnomesCloseToObject(torch);
-
   if (torchToGnome.length > 0) {
     skydome.material.color.b -= .002;
     skydome.rotation.x += .005;
     torch.trigger();
     randomObject(torch, true);
-    skydome.rotation.y += controls.random;
+    skydome.rotation.y += .02;
   } else {
     randomObject(torch, false);
     torch.release();
   }
 
   const shroomToGnome = getgnomesCloseToObject(shroom);
-
   if (shroomToGnome.length > 0) {
     shroom.trigger();
     randomObject(shroom, true);
     skydome.rotation.z += .002;
-    skydome.material.color.r -= .001;
   } else {
     randomObject(shroom, false);
     shroom.release();
   }
 
   const logToGnome = getgnomesCloseToObject(log);
-
   if (logToGnome.length > 0) {
     log.trigger();
     randomObject(log, true);
     skydome.rotation.x += .005;
-    skydome.material.color.r -= .002;
     skydome.rotation.y += .005;
   } else {
     log.release();
@@ -417,9 +414,9 @@ const checkCollision = () => {
   }
 
   const pickaxeToGnome = getgnomesCloseToObject(pickaxe);
-
   if (pickaxeToGnome.length > 0) {
     pickaxe.trigger();
+    skydome.rotation.z += .009;
     randomObject(pickaxe, true);
   } else {
     randomObject(pickaxe, false);
@@ -431,7 +428,7 @@ const checkCollision = () => {
 const getgnomesCloseToObject = object => {
   return gnomes.filter(gnome => {
     const distance = object.mesh.position.distanceTo(gnome.position);
-    if (distance <= 100) { return true;
+    if (distance <= 150) { return true;
     } else { return false;}
   });
 };
