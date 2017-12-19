@@ -12,7 +12,7 @@ import showNames from './lib/showNames';
 let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera,
   skydome, WIDTH, HEIGHT, potgoldGnome, torchGnome, shroomGnome, logGnome, pickaxeGnome;
 
-const gnomeNames = [`David`, `Kawouter`, `Plop`, `Wesley`, `Gnomio`];
+const gnomeNames = [`David`, `Kawouter`, `Plop`, `Wesley`, `Gnomeo`];
 const currentGnomes = [];
 
 const synthA = new Tone.Player({
@@ -349,7 +349,6 @@ const loadAssets = () => {
         gnome.rotation.z = 0;
         scene.add(gnome);
         gnomes.push(gnome);
-        console.log(gnomes);
       }
     });
 };
