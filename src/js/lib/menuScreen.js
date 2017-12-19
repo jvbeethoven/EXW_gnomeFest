@@ -5,13 +5,18 @@ const menuScreen = bool => {
     menuContainer.classList.add(`menuContainer`);
     document.body.appendChild(menuContainer);
 
-    const logo = document.createElement(`img`);
-    logo.src = `./assets/img/logo.png`;
-    logo.title = `logo`;
-    logo.width = 512;
-    logo.height = 384;
-    logo.classList.add(`loading`);
-    menuContainer.appendChild(logo);
+    // const logo = document.createElement(`img`);
+    // logo.src = `./assets/img/logo.png`;
+    // logo.title = `logo`;
+    // logo.width = 512;
+    // logo.height = 384;
+    // logo.classList.add(`loading`);
+    // menuContainer.appendChild(logo);
+
+    const menuTitle = document.createElement(`h1`);
+    menuTitle.innerHTML = `GnomeFest`;
+    menuTitle.classList.add(`menuTitle`);
+    menuContainer.appendChild(menuTitle);
 
     const button = document.createElement(`button`);
     button.innerHTML = `explore`;

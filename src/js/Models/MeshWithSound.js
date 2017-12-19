@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export default class MeshWithSound {
 
-  constructor(geometry, material, synth, note) {
+  constructor(geometry, material, synth, note, audio) {
 
     // create Mesh
     this.mesh = new THREE.Mesh(geometry, material);
@@ -11,30 +11,29 @@ export default class MeshWithSound {
     this.synth = synth;
     this.note = note;
     this.synthIsPlaying = false;
+    this.audio = audio;
   }
 
   trigger() {
 
     if (!this.synthIsPlaying) {
-      this.playMusic();
+      if (this.audio) {
+        this.synth.start();
+      } else {
+        this.synth.triggerAttack(this.note);
+      }
     }
     this.synthIsPlaying = true;
   }
 
   release() {
     this.synthIsPlaying = false;
-    this.synth.triggerRelease();
-    this.stopMusic();
-  }
 
-  playMusic() {
-
-    this.synth.triggerAttack(this.note);
-
-  }
-
-  stopMusic() {
-
+    if (this.audio) {
+      this.synth.stop();
+    } else {
+      this.synth.triggerRelease();
+    }
   }
 
 }

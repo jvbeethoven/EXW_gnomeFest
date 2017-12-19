@@ -9,33 +9,18 @@ import menuScreen from './lib/menuScreen';
 import createError from './lib/createError';
 
 
-let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, WIDTH, HEIGHT;
+let potOfGold, torch, gnome, shroom, log, pickaxe, container, controls, scene, camera, skydome, WIDTH, HEIGHT;
 
-const synthA = new Tone.Synth({
-  portamento: .01,
-  oscillator: {
-    type: `square`
-  },
-  envelope: {
-    attack: .005,
-    decay: .2,
-    sustain: .4,
-    release: 1.4
-  },
-  filterEnvelope: {
-    attack: .005,
-    decay: .1,
-    sustain: .05,
-    release: .8,
-    baseFrequency: 300,
-    octaves: 4
-  }
+const synthA = new Tone.Player({
+  url: `../assets/audio/drums.wav`,
+  loop: true
 }).toMaster();
-
 const synthANote = `c4`;
-
 const synthB = new Tone.MonoSynth({
-  volume: - 10,
+  volume: - 15,
+  oscillator: {
+    type: `sine4`
+  },
   envelope: {
     attack: 0.1,
     decay: 0.3,
@@ -50,20 +35,101 @@ const synthB = new Tone.MonoSynth({
   }
 }).toMaster();
 const synthBNote = `D2`;
-
-// const synthA = new Tone.FMSynth().toMaster();
-// const synthB = new Tone.PluckSynth().toMaster();
-const synthC = new Tone.Synth().toMaster();
-const synthCNote = `c4`;
+const synthC = new Tone.DuoSynth({
+  vibratoAmount: 0.5,
+  vibratoRate: 5,
+  portamento: 0.1,
+  harmonicity: 1.005,
+  volume: 5,
+  voice0: {
+    volume: - 2,
+    oscillator: {
+      type: `sawtooth`
+    },
+    filter: {
+      Q: 1,
+      type: `lowpass`,
+      rolloff: - 24
+    },
+    envelope: {
+      attack: 0.01,
+      decay: 0.25,
+      sustain: 0.4,
+      release: 1.2
+    },
+    filterEnvelope: {
+      attack: 0.001,
+      decay: 0.05,
+      sustain: 0.3,
+      release: 2,
+      baseFrequency: 100,
+      octaves: 4
+    }
+  },
+  voice1: {
+    volume: - 10,
+    oscillator: {
+      type: `sawtooth`
+    },
+    filter: {
+      Q: 2,
+      type: `bandpass`,
+      rolloff: - 12
+    },
+    envelope: {
+      attack: 0.25,
+      decay: 4,
+      sustain: 0.1,
+      release: 0.8
+    },
+    filterEnvelope: {
+      attack: 0.05,
+      decay: 0.05,
+      sustain: 0.7,
+      release: 2,
+      baseFrequency: 5000,
+      octaves: - 1.5
+    }
+  }
+}).toMaster();
+const synthCNote = `G2`;
 const synthD = new Tone.MembraneSynth().toMaster();
-const synthDNote = `c2`;
+const synthDNote = `D3`;
 const synthE = new Tone.Synth().toMaster();
 const synthENote = `c2`;
 
 const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
 const colormap = THREE.ImageUtils.loadTexture(`./assets/img/textures/drug_texture.jpg`);
 
-const testmaterial = new THREE.MeshPhongMaterial({
+const potOfGoldMaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+});
+
+const torchMaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+});
+
+const shroomMaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+});
+
+const logMaterial = new THREE.MeshPhongMaterial({
+  map: colormap,
+  displacementMap: displacementMap,
+  displacementScale: 0,
+  displacementBias: 0,
+});
+
+const pickaxeMaterial = new THREE.MeshPhongMaterial({
   map: colormap,
   displacementMap: displacementMap,
   displacementScale: 0,
@@ -76,7 +142,7 @@ displacementMap.minFilter = THREE.LinearFilter;
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
-  alpha: true
+  alpha: false
 });
 const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
 const cylindergeometry = new THREE.CylinderGeometry(.2, .2, .2, .2);
@@ -117,11 +183,13 @@ const createControls = () => {
   controls = {
     displacement: .1,
     rotation: .01,
-    frequencySynth: 2
+    frequencySynth: 2,
+    random: Math.random() * .1 + .001
   };
   gui.add(controls, `displacement`, .1, 10000, .001);
   gui.add(controls, `rotation`, 0, .1, .01);
   gui.add(controls, `frequencySynth`, 0, 20);
+  gui.add(controls, `random`, 0, .1, .001);
 };
 
 const createScene = () => {
@@ -133,12 +201,27 @@ const createScene = () => {
   WIDTH = window.innerWidth;
 
   scene = new THREE.Scene();
-  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 200, 500);
+  camera = new THREE.OrthographicCamera(WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, - 200, 2000);
 
   camera.position.set(- 10, 10, 100);
   camera.rotation.x = 0;
   camera.rotation.y = 0;
   camera.rotation.z = 0;
+
+  //skybox
+  const skygeometry = new THREE.SphereGeometry(1000, 60, 40);
+  const displacementMap = THREE.ImageUtils.loadTexture(`./assets/img/testmap.jpeg`);
+  const skymaterial = new THREE.MeshPhongMaterial({
+    displacementMap: displacementMap,
+    displacementScale: 0,
+    displacementBias: 0,
+  });
+  skymaterial.map = THREE.ImageUtils.loadTexture(`./assets/img/skybox_2.jpeg`);
+  skymaterial.minFilter = THREE.LinearFilter;
+  skymaterial.side = THREE.BackSide;
+  skydome = new THREE.Mesh(skygeometry, skymaterial);
+  scene.add(skydome);
+  console.log(skydome);
 
   const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(0, 1, 1).normalize();
@@ -173,7 +256,7 @@ const loadAssets = () => {
 
   return loadWithJSONLoader(`./assets/json/potOfGold.json`)
     .then(geometry => {
-      potOfGold = new MeshWithSound(geometry, testmaterial, synthA, synthANote);
+      potOfGold = new MeshWithSound(geometry, potOfGoldMaterial, synthA, synthANote, true);
       potOfGold.mesh.scale.set(0.3, 0.3, 0.3);
       potOfGold.mesh.position.x = - 600;
       potOfGold.mesh.position.y = 150;
@@ -183,7 +266,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/torch.json`))
     .then(geometry => {
-      torch = new MeshWithSound(geometry, testmaterial, synthB, synthBNote);
+      torch = new MeshWithSound(geometry, torchMaterial, synthB, synthBNote, false);
       torch.mesh.scale.set(0.4, 0.4, 0.4);
       torch.mesh.position.x = - 300;
       torch.mesh.position.y = - 90;
@@ -192,7 +275,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/shroom.json`))
     .then(geometry => {
-      shroom = new MeshWithSound(geometry, testmaterial, synthC, synthCNote);
+      shroom = new MeshWithSound(geometry, shroomMaterial, synthC, synthCNote, false);
       shroom.mesh.scale.set(0.4, 0.4, 0.4);
       shroom.mesh.position.x = 0;
       shroom.mesh.position.y = - 200;
@@ -201,7 +284,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/log.json`))
     .then(geometry => {
-      log = new MeshWithSound(geometry, testmaterial, synthD, synthDNote);
+      log = new MeshWithSound(geometry, logMaterial, synthD, synthDNote, false);
       const s = 0.9;
       log.mesh.scale.set(s, s, s);
       log.mesh.position.x = 300;
@@ -212,7 +295,7 @@ const loadAssets = () => {
     })
     .then(() => loadWithJSONLoader(`./assets/json/pickaxe.json`))
     .then(geometry => {
-      pickaxe = new MeshWithSound(geometry, testmaterial, synthE, synthENote);
+      pickaxe = new MeshWithSound(geometry, pickaxeMaterial, synthE, synthENote, false);
       pickaxe.mesh.scale.set(0.4, 0.4, 0.4);
       pickaxe.mesh.position.x = 500;
       pickaxe.mesh.position.y = 10;
@@ -237,6 +320,21 @@ const loadAssets = () => {
     });
 };
 
+const randomObject = (object, bool) => {
+  if (bool) {
+    console.log(object);
+    object.mesh.material.displacementScale += .1;
+    object.mesh.rotation.x += .1;
+    object.mesh.rotation.y += .005;
+  } else {
+    object.mesh.material.displacementScale = 0;
+    // object.mesh.material.displacementScale -= .1;
+    // if (object.mesh.material.displacementScale === 0) {
+    //   object.mesh.material.displacementScale = 0;
+    //}
+  }
+};
+
 const makeDraggable = () => new DragControls(gnomes, camera, renderer.domElement);
 
 const checkCollision = () => {
@@ -245,17 +343,27 @@ const checkCollision = () => {
 
   if (potOfGoldToGnome.length > 0) {
     potOfGold.trigger();
-
+    randomObject(potOfGold, true);
+    skydome.rotation.x += controls.random;
+    skydome.material.color.b -= controls.random;
+    skydome.material.displacementScale += .1;
+    skydome.material.displacementBias += 1;
   } else {
+    randomObject(potOfGold, false);
     potOfGold.release();
     Tone.Transport.stop();
+    skydome.material.color.b += .002;
+    skydome.material.displacementScale -= .01;
   }
 
   const torchToGnome = getgnomesCloseToObject(torch);
 
   if (torchToGnome.length > 0) {
     torch.trigger();
+    randomObject(torch, true);
+    skydome.rotation.y += controls.random;
   } else {
+    randomObject(torch, false);
     torch.release();
   }
 
@@ -263,7 +371,11 @@ const checkCollision = () => {
 
   if (shroomToGnome.length > 0) {
     shroom.trigger();
+    randomObject(shroom, true);
+    skydome.rotation.z += .002;
+    skydome.material.color.r -= controls.random;
   } else {
+    randomObject(shroom, false);
     shroom.release();
   }
 
@@ -271,15 +383,22 @@ const checkCollision = () => {
 
   if (logToGnome.length > 0) {
     log.trigger();
+    randomObject(log, true);
+    skydome.rotation.x += .005;
+    skydome.material.color.r -= controls.random - Math.random();
+    skydome.rotation.y += .005;
   } else {
     log.release();
+    randomObject(log, false);
   }
 
   const pickaxeToGnome = getgnomesCloseToObject(pickaxe);
 
   if (pickaxeToGnome.length > 0) {
     pickaxe.trigger();
+    randomObject(pickaxe, true);
   } else {
+    randomObject(pickaxe, false);
     pickaxe.release();
   }
 
@@ -302,6 +421,7 @@ const render = () => {
 const handleWindowResize = () => {
   HEIGHT = window.innerHeight;
   WIDTH = window.innerWidth;
+
   renderer.setSize(WIDTH, HEIGHT);
   camera.aspect = WIDTH / HEIGHT;
   camera.updateProjectionMatrix();
